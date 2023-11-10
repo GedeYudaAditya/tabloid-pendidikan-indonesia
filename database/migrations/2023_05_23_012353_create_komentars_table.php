@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('berita_id')->constrained('beritas')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->text('isi');
+            $table->foreignId('parent_id')->nullable()->constrained('komentars')->onDelete('cascade');
             $table->timestamps();
         });
     }

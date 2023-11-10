@@ -20,4 +20,9 @@ class Komentar extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function replayKomentar()
+    {
+        return $this->hasMany(Komentar::class, 'parent_id');
+    }
 }

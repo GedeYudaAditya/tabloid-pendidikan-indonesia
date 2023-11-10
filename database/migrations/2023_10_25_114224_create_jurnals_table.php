@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('penulis');
             $table->text('isi');
-            $table->string('gambar');
-            $table->string('attachment');
+            $table->longText('gambar');
+            $table->longText('attachment');
             $table->enum('status', ['publish', 'draft'])->default('draft');
             $table->timestamps();
         });

@@ -49,8 +49,61 @@ class Controller extends BaseController
             'title' => 'Detail Berita',
             'kabupaten' => Kabupaten::all(),
             'berita' => Berita::where('slug', $slug)->firstOrFail(),
+            'comments' => Berita::where('slug', $slug)->firstOrFail()
+                ->komentar()
+                ->orderBy('created_at', 'desc')
+                ->where('parent_id', null)
+                ->get(),
         ];
         return view('detail-berita', $data);
+    }
+
+    public function comment(Request $request, $id)
+    {
+        $request->validate([
+            'komentar' => 'required|string',
+        ]);
+
+        try {
+            $berita = Berita::findOrFail($id);
+            DB::beginTransaction();
+            $berita->komentar()->create([
+                'user_id' => auth()->user()->id,
+                'isi' => $request->komentar,
+                'berita_id' => $berita->id,
+            ]);
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Berhasil komentar berita.');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Gagal komentar berita. ' . $th->getMessage());
+        }
+    }
+
+    public function reply(Request $request, $id)
+    {
+        $request->validate([
+            'komentar' => 'required|string',
+            'parent_id' => 'required|integer',
+        ]);
+
+        try {
+            $berita = Berita::findOrFail($id);
+            DB::beginTransaction();
+            $berita->komentar()->create([
+                'user_id' => auth()->user()->id,
+                'isi' => $request->komentar,
+                'berita_id' => $berita->id,
+                'parent_id' => $request->parent_id,
+            ]);
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Berhasil reply komentar berita.');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Gagal reply komentar berita. ' . $th->getMessage());
+        }
     }
 
     public function beritaTag($slug)

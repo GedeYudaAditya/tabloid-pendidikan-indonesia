@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('penulis');
             $table->text('sinposis');
-            $table->string('gambar');
+            $table->longText('gambar');
             $table->enum('status', ['publish', 'draft'])->default('draft');
             $table->timestamps();
         });

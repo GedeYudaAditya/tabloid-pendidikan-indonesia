@@ -42,6 +42,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/get-like/{id}', [Controller::class, 'getLike'])->name('get.like');
     // comment berita
     Route::post('/comment/{id}', [Controller::class, 'comment'])->name('comment');
+    // get comment
+    Route::get('/get-comment/{id}', [Controller::class, 'getComment'])->name('get.comment');
+    // reply comment
+    Route::post('/reply/{id}', [Controller::class, 'reply'])->name('reply');
 });
 
 

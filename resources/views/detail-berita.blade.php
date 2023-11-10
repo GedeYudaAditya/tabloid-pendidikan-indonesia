@@ -17,6 +17,19 @@
         .hover-kec:hover {
             background-color: #009ab9 !important;
         }
+
+        .gradient-custom {
+            /* fallback for old browsers */
+            background: #4facfe;
+            /* Chrome 10-25,
+                                                                                            Safari 5.1-6 */
+            background: -webkit-linear-gradient(to bottom right, rgba(79, 172, 254,
+                        1), rgba(0, 242, 254, 1));
+            /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+,
+                                                                                            Safari 7+ */
+            background: linear-gradient(to bottom right, rgba(79, 172, 254, 1), rgba(0,
+                        242, 254, 1))
+        }
     </style>
 @endsection
 
@@ -98,34 +111,128 @@
                                         class="far fa-heart text-muted"></i></button>
                             @endif
                         @else
-                            <a href="{{ route('login') }}" class="far fa-heart text-muted"></a>
+                            <a href="{{ route('auth') }}"><i class="far fa-heart text-muted"></i></a>
                         @endif
                         <span id="like-text">{{ $berita->like }}</span>
                     </p>
 
                     <hr>
 
-                    <div class="mt-3">
+                    <div class="mt-3" style="text-align: justify">
                         {!! $berita->isi !!}
                     </div>
                 </div>
             </div>
             {{-- comment sesction --}}
-            <div class="p-3 border mt-3">
-                <h5>Kolom Komentar</h5>
+            <div class="p-3 border mt-3 gradient-custom">
+                <h5 class="text-white">Kolom Komentar</h5>
                 <hr>
                 {{-- comment form --}}
                 <form action="{{ route('comment', $berita->id) }}" method="POST">
                     @csrf
                     <div class="mb-3">
-                        <label for="komentar" class="form-label">Komentar</label>
+                        <label for="komentar" class="form-label text-white">Komentar</label>
                         <textarea class="form-control" id="komentar" rows="3" name="komentar"></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">Kirim</button>
                 </form>
                 <hr>
                 {{-- comment list --}}
+                <div class="card">
+                    <div class="card-body p-4">
 
+                        <div class="row">
+                            <div class="col">
+                                @forelse ($comments as $comment)
+                                    <div class="d-flex flex-start mb-3">
+                                        <img class="rounded-circle shadow-1-strong me-3"
+                                            src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(10).webp" alt="avatar"
+                                            width="65" height="65" />
+                                        <div class="flex-grow-1 flex-shrink-1">
+                                            <div>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <p class="mb-1">
+                                                        {{ $comment->user->name }} <span class="small">-
+                                                            {{ $comment->created_at->diffForHumans() }}
+                                                        </span>
+                                                    </p>
+                                                    <button class="text-link reply-button" type="button"
+                                                        value="{{ $comment->id }}"
+                                                        style="background: transparent; border: none;"><i
+                                                            class="fas fa-reply fa-xs"></i><span class="small">
+                                                            reply</span></button>
+                                                </div>
+                                                <p class="small mb-0">
+                                                    {{ $comment->isi }}
+                                                </p>
+                                            </div>
+
+                                            {{-- jika ada replay --}}
+                                            @foreach ($comment->replayKomentar as $item)
+                                                <div class="d-flex flex-start mt-4">
+                                                    <a class="me-3" href="#">
+                                                        <img class="rounded-circle shadow-1-strong"
+                                                            src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(11).webp"
+                                                            alt="avatar" width="65" height="65" />
+                                                    </a>
+                                                    <div class="flex-grow-1 flex-shrink-1">
+                                                        <div>
+                                                            <div class="d-flex justify-content-between align-items-center">
+                                                                <p class="mb-1">
+                                                                    {{ $item->user->name }} <span class="small">-
+                                                                        {{ $item->created_at->diffForHumans() }}
+                                                                    </span>
+                                                                </p>
+                                                            </div>
+                                                            <p class="small mb-0">
+                                                                {{ $item->isi }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+
+                                            {{-- <div class="d-flex flex-start mt-4">
+                                                <a class="me-3" href="#">
+                                                    <img class="rounded-circle shadow-1-strong"
+                                                        src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(32).webp"
+                                                        alt="avatar" width="65" height="65" />
+                                                </a>
+                                                <div class="flex-grow-1 flex-shrink-1">
+                                                    <div>
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <p class="mb-1">
+                                                                John Smith <span class="small">- 4 hours
+                                                                    ago</span>
+                                                            </p>
+                                                        </div>
+                                                        <p class="small mb-0">
+                                                            the majority have suffered alteration in some form,
+                                                            by
+                                                            injected humour, or randomised words.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div> --}}
+                                        </div>
+                                    </div>
+                                @empty
+                                    <div class="d-flex flex-start">
+                                        <div class="flex-grow-1 flex-shrink-1">
+                                            <div>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <p class="mb-1">
+                                                        <span class="small">Belum ada komentar</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforelse
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-md-3">
@@ -175,7 +282,8 @@
                                         class="w-100 img-fluid img-thumbnail" alt="">
                                 @endif
                             @else
-                                <img src="{{ asset('img/berita/' . $item->gambar) }}" class="w-100 img-fluid img-thumbnail"
+                                <img src="{{ asset('img/berita/' . $item->gambar) }}"
+                                    class="w-100 img-fluid img-thumbnail"
                                     alt="{{ asset('img/berita/' . $item->gambar) }}">
                             @endif
                         </div>
@@ -242,6 +350,43 @@
                         }
                     }
                 });
+            });
+        });
+    </script>
+
+    {{-- reply button --}}
+    <script>
+        $(document).ready(function() {
+            $('.reply-button').click(function() {
+                var id = $(this).val();
+                console.log(id);
+                // $.ajax({
+                //     url: "{{ route('reply', $berita->id) }}",
+                //     type: "POST",
+                //     data: {
+                //         _token: "{{ csrf_token() }}",
+                //         parent_id: id
+                //     },
+                //     // success: function(response) {
+                //     //     if (response.status) {
+                //     //         console.log(response);
+                //     //     }
+                //     // }
+                // });
+                // generate form
+                var form = `
+                    <form action="{{ route('reply', $berita->id) }}" method="POST">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="komentar" class="form-label text-white">Komentar</label>
+                            <textarea class="form-control" id="komentar" rows="3" name="komentar"></textarea>
+                        </div>
+                        <input type="hidden" name="parent_id" value="${id}">
+                        <button type="submit" class="btn btn-primary">Kirim</button>
+                    </form>
+                `;
+                // append form
+                $(this).parent().parent().parent().append(form);
             });
         });
     </script>

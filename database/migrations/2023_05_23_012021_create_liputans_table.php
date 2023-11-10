@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->text('judul');
             $table->longText('isi');
-            $table->string('gambar');
+            $table->longText('gambar');
             $table->enum('status', ['mengantri', 'dibuat'])->default('mengantri');
             $table->foreignId('reporter_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();

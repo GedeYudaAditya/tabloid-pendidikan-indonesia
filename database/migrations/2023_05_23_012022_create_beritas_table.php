@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->text('judul');
             $table->longText('isi');
-            $table->string('gambar');
+            $table->longText('gambar');
             $table->bigInteger('like')->default(0);
             $table->enum('status', ['publish', 'draft', 'ditolak', 'revisi'])->default('draft');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
