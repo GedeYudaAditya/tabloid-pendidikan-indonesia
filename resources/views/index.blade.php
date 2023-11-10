@@ -286,6 +286,7 @@
                     // get data that have most like in this week
                     $like = App\Models\Berita::whereBetween('created_at', [Carbon\Carbon::now()->startOfWeek(), Carbon\Carbon::now()->endOfWeek()])->first();
 
+                    // get the most like
                     $like = $like->max('like');
 
                     // get the data with value of most like

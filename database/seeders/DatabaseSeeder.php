@@ -43,6 +43,20 @@ class DatabaseSeeder extends Seeder
             'level' => 'reporter',
         ]);
 
+        User::factory()->create([
+            'name' => 'Jurnalis User',
+            'email' => 'jurnalis@example.com',
+            'password' => bcrypt('password'),
+            'level' => 'jurnalis',
+        ]);
+
+        User::factory()->create([
+            'name' => 'User',
+            'email' => 'user@example.com',
+            'password' => bcrypt('password'),
+            'level' => 'user',
+        ]);
+
         SistemInformasi::factory(10)->create();
         Program::factory(10)->create();
     }

@@ -22,11 +22,11 @@
             /* fallback for old browsers */
             background: #4facfe;
             /* Chrome 10-25,
-                                                                                            Safari 5.1-6 */
+                                                                                                                            Safari 5.1-6 */
             background: -webkit-linear-gradient(to bottom right, rgba(79, 172, 254,
                         1), rgba(0, 242, 254, 1));
             /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+,
-                                                                                            Safari 7+ */
+                                                                                                                            Safari 7+ */
             background: linear-gradient(to bottom right, rgba(79, 172, 254, 1), rgba(0,
                         242, 254, 1))
         }
@@ -145,9 +145,16 @@
                             <div class="col">
                                 @forelse ($comments as $comment)
                                     <div class="d-flex flex-start mb-3">
-                                        <img class="rounded-circle shadow-1-strong me-3"
-                                            src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(10).webp" alt="avatar"
-                                            width="65" height="65" />
+                                        {{-- https://ui-avatars.com/api/?name= --}}
+                                        @if (Auth::user()->avatar)
+                                            <img class="rounded-circle shadow-1-strong me-3"
+                                                src="{{ asset('img/avatar/' . Auth::user()->avatar) }}" alt="avatar"
+                                                width="65" height="65" />
+                                        @else
+                                            <img class="rounded-circle shadow-1-strong me-3"
+                                                src="https://ui-avatars.com/api/?background=random&name={{ $comment->user->name }}"
+                                                alt="avatar" width="65" height="65" />
+                                        @endif
                                         <div class="flex-grow-1 flex-shrink-1">
                                             <div>
                                                 <div class="d-flex justify-content-between align-items-center">
@@ -171,9 +178,15 @@
                                             @foreach ($comment->replayKomentar as $item)
                                                 <div class="d-flex flex-start mt-4">
                                                     <a class="me-3" href="#">
-                                                        <img class="rounded-circle shadow-1-strong"
-                                                            src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(11).webp"
-                                                            alt="avatar" width="65" height="65" />
+                                                        @if ($item->user->avatar)
+                                                            <img class="rounded-circle shadow-1-strong me-3"
+                                                                src="{{ asset('img/avatar/' . $item->user->avatar) }}"
+                                                                alt="avatar" width="65" height="65" />
+                                                        @else
+                                                            <img class="rounded-circle shadow-1-strong me-3"
+                                                                src="https://ui-avatars.com/api/?background=random&name={{ $item->user->name }}"
+                                                                alt="avatar" width="65" height="65" />
+                                                        @endif
                                                     </a>
                                                     <div class="flex-grow-1 flex-shrink-1">
                                                         <div>

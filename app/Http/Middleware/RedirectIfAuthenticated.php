@@ -28,6 +28,10 @@ class RedirectIfAuthenticated
                     return redirect(RouteServiceProvider::HOME_REDAKSI);
                 } else if (Auth::user()->level == 'reporter') {
                     return redirect(RouteServiceProvider::HOME_REPORTER);
+                } else if (Auth::user()->level == 'jurnalis') {
+                    return redirect(RouteServiceProvider::HOME_JURNALIS);
+                } else if (Auth::user()->level == 'user') {
+                    return redirect(RouteServiceProvider::HOME_USER);
                 }
             }
         }

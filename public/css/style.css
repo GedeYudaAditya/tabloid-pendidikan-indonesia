@@ -41,8 +41,10 @@
 }
 
 .app-overlay-bg {
-    background-color: #ffffffb7;
+    /* background-color: #ffffffb7; */
     /* background-color: #a4dffcb7; */
+    /* gradient from whit to transparant */
+    background: linear-gradient(360deg, rgba(255, 255, 255, 0.877) 0%, rgba(255, 255, 255, 0.493) 100%);
 }
 
 .app-overlay-dark-bg {
