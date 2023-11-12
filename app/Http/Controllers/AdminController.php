@@ -572,7 +572,7 @@ class AdminController extends Controller
         $request->validate([
             'nama' => 'required|unique:sponsors,nama',
             'gambar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'link' => 'required',
+            'link' => 'nullable',
         ]);
 
         try {
@@ -612,7 +612,7 @@ class AdminController extends Controller
         $request->validate([
             'nama' => 'required|unique:sponsors,nama,' . $id,
             'gambar' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'link' => 'required',
+            'link' => 'nullable',
         ]);
 
         try {
