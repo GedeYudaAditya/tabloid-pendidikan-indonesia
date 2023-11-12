@@ -140,8 +140,8 @@
                             <tr>
                                 <th>No</th>
                                 <th>Nama Berita</th>
-                                <th>Di Redaksi Oleh</th>
-                                <th>Di Report Oleh</th>
+                                <th>Redaksi</th>
+                                <th>Reporter</th>
                                 <th>Tahun</th>
                             </tr>
                         </thead>
