@@ -48,5 +48,88 @@
                 </div>
             </div>
         </div>
+
+        {{-- table semua user --}}
+        <div class="card mt-3">
+            <div class="card-header">
+                <div class="row justify-content-between">
+                    <h5 class="card-title col-2">Semua User</h5>
+                    {{-- tambah button --}}
+                    @if (Auth::user()->level == 'admin')
+                        <a href="{{ route('admin.user-management.create') }}" class="btn btn-primary col-2">Tambah User</a>
+                    @endif
+                </div>
+            </div>
+            <div class="card-body">
+                <table id="table" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama User</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>
+                                Jumlah Berita/Liputan/Jurnal
+                            </th>
+                            @if (Auth::user()->level == 'admin')
+                                <th>Aksi</th>
+                            @endif
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($user as $item)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $item->name }}</td>
+                                <td>{{ $item->email }}</td>
+                                <td>
+                                    @if ($item->level == 'admin')
+                                        <span class="badge bg-primary text-light">{{ Str::upper($item->level) }}</span>
+                                    @elseif ($item->level == 'user')
+                                        <span class="badge bg-secondary text-light">{{ Str::upper($item->level) }}</span>
+                                    @elseif ($item->level == 'reporter')
+                                        <span class="badge bg-success text-light">{{ Str::upper($item->level) }}</span>
+                                    @elseif ($item->level == 'redaksi')
+                                        <span class="badge bg-info text-light">{{ Str::upper($item->level) }}</span>
+                                    @else
+                                        <span class="badge bg-warning text-light">{{ Str::upper($item->level) }}</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($item->level == 'admin' || $item->level == 'redaksi')
+                                        {{ $item->berita->count() }}
+                                    @elseif ($item->level == 'reporter')
+                                        {{ $item->liputan->count() }}
+                                    @else
+                                        {{ $item->jurnal->count() }}
+                                    @endif
+                                </td>
+                                @if (Auth::user()->level == 'admin')
+                                    <td>
+                                        {{-- <a href="#" class="btn btn-sm btn-primary">Detail</a> --}}
+                                        <a href="#" class="btn btn-sm btn-warning">Edit</a>
+                                        <form action="#" method="post" class="d-inline">
+                                            @csrf
+                                            @method('delete')
+                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                onclick="return confirm('Yakin ingin menghapus data?')">Hapus</button>
+                                        </form>
+                                    </td>
+                                @endif
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                {{-- <a href="{{ route('admin.user.create') }}" class="btn btn-primary mt-3">Tambah User</a> --}}
+            </div>
+        </div>
     </div>
+@endsection
+
+@section('other-js')
+    <script>
+        $(document).ready(function() {
+            $('#table').DataTable();
+        });
+    </script>
 @endsection

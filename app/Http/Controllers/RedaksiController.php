@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Berita;
 use App\Models\HariPeringatan;
+use App\Models\Kabupaten;
+use App\Models\Kecamatan;
 use App\Models\Liputan;
 use App\Models\SekapurSirih;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -17,7 +20,11 @@ class RedaksiController extends Controller
     public function home()
     {
         $data = [
-            'title' => 'Redaksi || Dashboard'
+            'title' => 'Redaksi || Dashboard',
+            'berita' => Berita::where('status', 'publish')->get(),
+            'kecamatan' => Kecamatan::all(),
+            'kabupaten' => Kabupaten::all(),
+            'user' => User::where('level', '!=', 'user')->where('level', '!=', 'admin')->get(),
         ];
         return view('admin.index', $data);
     }

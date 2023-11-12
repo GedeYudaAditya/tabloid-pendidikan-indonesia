@@ -118,6 +118,16 @@ Route::middleware(['auth', 'role'])->name('admin')->prefix('/admin')->group(func
         Route::post('/{id}/edit', [AdminController::class, 'managementSponsorUpdate'])->name('.update');
         Route::delete('/{id}/delete', [AdminController::class, 'managementSponsorDelete'])->name('.delete');
     });
+
+    // User management
+    Route::prefix('/user-management')->name('.user-management')->group(function () {
+        Route::get('/', [AdminController::class, 'userManagement'])->name('.index');
+        Route::get('/create', [AdminController::class, 'userManagementCreate'])->name('.create');
+        Route::post('/create', [AdminController::class, 'userManagementStore'])->name('.store');
+        Route::get('/{id}/edit', [AdminController::class, 'userManagementEdit'])->name('.edit');
+        Route::post('/{id}/edit', [AdminController::class, 'userManagementUpdate'])->name('.update');
+        Route::delete('/{id}/delete', [AdminController::class, 'userManagementDelete'])->name('.delete');
+    });
 });
 
 Route::middleware(['auth', 'role'])->name('redaksi')->prefix('redaksi')->group(function () {

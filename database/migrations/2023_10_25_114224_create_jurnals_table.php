@@ -20,6 +20,7 @@ return new class extends Migration
             $table->longText('gambar');
             $table->longText('attachment');
             $table->enum('status', ['publish', 'draft'])->default('draft');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

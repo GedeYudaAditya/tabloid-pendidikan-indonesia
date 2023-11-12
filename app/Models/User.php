@@ -48,6 +48,16 @@ class User extends Authenticatable
         return $this->hasMany(Berita::class);
     }
 
+    public function liputan()
+    {
+        return $this->hasMany(Liputan::class, 'reporter_id');
+    }
+
+    public function jurnal()
+    {
+        return $this->hasMany(Jurnal::class);
+    }
+
     public function komentar()
     {
         return $this->hasMany(Komentar::class);
