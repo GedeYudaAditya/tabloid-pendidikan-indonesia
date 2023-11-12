@@ -140,6 +140,8 @@
                             <tr>
                                 <th>No</th>
                                 <th>Nama Berita</th>
+                                <th>Di Redaksi Oleh</th>
+                                <th>Di Report Oleh</th>
                                 <th>Tahun</th>
                             </tr>
                         </thead>
@@ -149,6 +151,8 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td><a href="{{ route('admin.berita.detail', $item->slug) }}">{{ $item->judul }}</a>
                                     </td>
+                                    <td>{{ $item->user->name }}</td>
+                                    <td>{{ $item->liputan->reporter->name }}</td>
                                     <td>{{ $item->created_at->format('Y') }}</td>
                                 </tr>
                             @endforeach
