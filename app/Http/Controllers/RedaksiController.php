@@ -175,15 +175,37 @@ class RedaksiController extends Controller
                 $encoded = $berita->gambar;
             }
 
-
-            $data = [
-                'judul' => $request->judul,
-                'isi' => $request->isi,
-                'gambar' => $encoded,
-                'slug' => $slug,
-                'user_id' => auth()->user()->id,
-                'status' => 'revisi',
-            ];
+            // check if its revisi
+            if ($berita->status == 'ditolak') {
+                $data = [
+                    'judul' => $request->judul,
+                    'isi' => $request->isi,
+                    'old_isi' => $berita->isi,
+                    'gambar' => $encoded,
+                    'slug' => $slug,
+                    'user_id' => auth()->user()->id,
+                    'status' => 'revisi',
+                ];
+            } elseif ($berita->status == 'revisi') {
+                $data = [
+                    'judul' => $request->judul,
+                    'isi' => $request->isi,
+                    // 'old_isi' => $berita->isi,
+                    'gambar' => $encoded,
+                    'slug' => $slug,
+                    'user_id' => auth()->user()->id,
+                    'status' => 'revisi',
+                ];
+            } else {
+                $data = [
+                    'judul' => $request->judul,
+                    'isi' => $request->isi,
+                    'gambar' => $encoded,
+                    'slug' => $slug,
+                    'user_id' => auth()->user()->id,
+                    'status' => 'draft',
+                ];
+            }
 
             $berita->update($data);
 

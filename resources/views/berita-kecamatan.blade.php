@@ -92,6 +92,12 @@
                                     <i class="fas fa-heart like-icon" onload="checkers_like({{ $latest->id }})"></i>
                                     <span class="like-number">{{ $latest->like }}</span>
                                 </button>
+                                <br>
+                                <small class="text-muted">
+                                    Created by {{ $latest->user->name }} |
+                                    Reported by
+                                    {{ $latest->liputan->reporter->name }}
+                                </small>
                             </form>
                         </div>
                     </div>
@@ -172,6 +178,12 @@
                                     <i class="fas fa-heart like-icon" onload="checkers_like({{ $latest->id }})"></i>
                                     <span class="like-number">{{ $latest->like }}</span>
                                 </button>
+                                <br>
+                                <small class="text-muted">
+                                    Created by {{ $latest->user->name }} |
+                                    Reported by
+                                    {{ $latest->liputan->reporter->name }}
+                                </small>
                             </form>
                         </div>
                     </div>
@@ -316,6 +328,11 @@
                     {{ $mostPopular->like }}
                 </h6>
 
+                <small class="text-muted">
+                    Created by {{ $mostPopular->user->name }} |
+                    Reported by
+                    {{ $mostPopular->liputan->reporter->name }}
+                </small>
                 <p>
                     @php
                         $isi = strip_tags($mostPopular->isi);
@@ -354,11 +371,11 @@
                 <div class="row mb-2">
                     @if (is_array(json_decode($item->gambar)))
                         <img src="{{ asset('img/berita/' . json_decode($item->gambar)[0]) }}" class="col-4"
-                            style="object-fit: cover; object-position: center"
+                            style="object-fit: cover; object-position: center; height: 100px;"
                             alt="{{ asset('img/berita/' . json_decode($item->gambar)[0]) }}">
                     @else
                         <img src="{{ asset('img/berita/' . json_decode($item->gambar)) }}" class="col-4"
-                            style="object-fit: cover; object-position: center"
+                            style="object-fit: cover; object-position: center; height: 100px;"
                             alt="{{ asset('img/berita/' . json_decode($item->gambar)) }}">
                     @endif
                     <div class="col-8">
@@ -407,31 +424,38 @@
         </div>
     </div>
 
+@endsection
+
+@section('sponsor')
     {{-- sponsors --}}
     {{-- small make slideing list sponsor --}}
-    <div class="row mb-5">
-        <div class="col-md-12">
-            <h2 class="text-center mb-3">Sponsor</h2>
-            <div class="app-bg-base p-3">
-                <div class="row justify-content-center">
-                    @forelse ($sponsors as $item)
-                        <div class="col-md-2 text-center mb-3">
-                            <img src="{{ asset('img/sponsor/' . $item->gambar) }}" style="width: 80%; height: 80%"
-                                style="object-fit: contain; object-position: center" alt="...">
-                            {{-- nama --}}
-                            <h6 class="text-center mt-2">{{ $item->nama }}</h6>
+    <div class="container-fluid app-bg-base">
+        <div class="row py-5">
+            <div class="col-md-12">
+                <h2 class="text-center mb-3">Sponsor</h2>
+                <div class="p-3">
+                    <marquee behavior="scroll" direction="left">
+                        <div class="justify-content-center" style="flex-wrap: nowrap; display: flex; width: max-content;">
+                            @forelse ($sponsors as $item)
+                                <div class="col-md-2 text-center mb-3">
+                                    <img src="{{ asset('img/sponsor/' . $item->gambar) }}"
+                                        style="width: 100px; height: 100px; object-fit: contain; object-position: center"
+                                        alt="...">
+                                    {{-- nama --}}
+                                    <h6 class="text-center mt-2">{{ $item->nama }}</h6>
+                                </div>
+                            @empty
+                                <small>
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    Belum ada sponsor
+                                </small>
+                            @endforelse
                         </div>
-                    @empty
-                        <small>
-                            <i class="fas fa-exclamation-circle"></i>
-                            Belum ada sponsor
-                        </small>
-                    @endforelse
+                    </marquee>
                 </div>
             </div>
         </div>
     </div>
-
 @endsection
 
 @section('other-js')

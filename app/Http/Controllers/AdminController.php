@@ -18,7 +18,10 @@ class AdminController extends Controller
     public function home()
     {
         $data = [
-            'title' => 'Admin || Dashboard'
+            'title' => 'Admin || Dashboard',
+            'berita' => Berita::where('status', 'publish')->get(),
+            'kecamatan' => Kecamatan::all(),
+            'kabupaten' => Kabupaten::all(),
         ];
         return view('admin.index', $data);
     }

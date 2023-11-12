@@ -105,6 +105,7 @@
                         @yield('content')
                     </div>
                 </div>
+                @yield('sponsor')
                 @include('components.other.footer')
             </div>
         </div>

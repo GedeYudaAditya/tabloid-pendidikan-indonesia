@@ -25,6 +25,12 @@
                     <th>No</th>
                     <th>Judul Berita</th>
                     <th>
+                        Dibuat Oleh
+                    </th>
+                    <th>
+                        Direport Oleh
+                    </th>
+                    <th>
                         Nama Kecamatan
                     </th>
                     <th>
@@ -41,6 +47,8 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td><a href="{{ route('admin.berita.detail', $item->slug) }}">{{ $item->judul }}</a></td>
+                        <td>{{ $item->user->name }}</td>
+                        <td>{{ $item->liputan->reporter->name }}</td>
                         <td>{{ $item->kecamatan->nama_kecamatan }}</td>
                         <td>{{ $item->kecamatan->kabupaten->nama_kabupaten }}</td>
                         <td class="text-center">

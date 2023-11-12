@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->text('judul');
             $table->longText('isi');
+            $table->longText('old_isi')->nullable();
             $table->longText('gambar');
             $table->bigInteger('like')->default(0);
             $table->enum('status', ['publish', 'draft', 'ditolak', 'revisi'])->default('draft');

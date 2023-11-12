@@ -21,7 +21,9 @@
                 <div class="card h-100">
                     <div class="card-body">
                         <h5 class="card-title">Banyak Kabupaten</h5>
-                        <p class="card-text">5 Kabupaten</p>
+                        <p class="card-text">
+                            {{ $kabupaten->count() }} Kabupaten
+                        </p>
                     </div>
                 </div>
             </div>
@@ -29,7 +31,9 @@
                 <div class="card h-100">
                     <div class="card-body">
                         <h5 class="card-title">Banyak Kecamatan</h5>
-                        <p class="card-text">150 Kecamatan</p>
+                        <p class="card-text">
+                            {{ $kecamatan->count() }} Kecamatan
+                        </p>
                     </div>
                 </div>
             </div>
@@ -37,7 +41,9 @@
                 <div class="card h-100">
                     <div class="card-body">
                         <h5 class="card-title">Banyak Berita</h5>
-                        <p class="card-text">1000 Berita</p>
+                        <p class="card-text">
+                            {{ $berita->count() }} Berita
+                        </p>
                     </div>
                 </div>
             </div>

@@ -23,4 +23,9 @@ class Liputan extends Model
     {
         return $this->belongsTo(Kecamatan::class);
     }
+
+    public function reporter()
+    {
+        return $this->belongsTo(User::class, 'reporter_id');
+    }
 }

@@ -22,11 +22,11 @@
             /* fallback for old browsers */
             background: #4facfe;
             /* Chrome 10-25,
-                                                                                                                            Safari 5.1-6 */
+                                                                                                                                        Safari 5.1-6 */
             background: -webkit-linear-gradient(to bottom right, rgba(79, 172, 254,
                         1), rgba(0, 242, 254, 1));
             /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+,
-                                                                                                                            Safari 7+ */
+                                                                                                                                        Safari 7+ */
             background: linear-gradient(to bottom right, rgba(79, 172, 254, 1), rgba(0,
                         242, 254, 1))
         }
@@ -95,7 +95,8 @@
 
                     {{-- author --}}
                     <p class="mt-3">
-                        <span class="text-muted">Dibuat oleh :</span> {{ $berita->user->name }}
+                        <span class="text-muted">Dibuat Oleh Redaksi :</span> {{ $berita->user->name }} | <span
+                            class="text-muted">Diliput Oleh :</span> {{ $berita->liputan->reporter->name }}
                         <i class="me-3"></i>
                         {{-- icon comment --}}
                         <i class="fas fa-comment text-muted"></i>
@@ -146,7 +147,7 @@
                                 @forelse ($comments as $comment)
                                     <div class="d-flex flex-start mb-3">
                                         {{-- https://ui-avatars.com/api/?name= --}}
-                                        @if (Auth::user()->avatar)
+                                        @if (isset($comment->user->avatar))
                                             <img class="rounded-circle shadow-1-strong me-3"
                                                 src="{{ asset('img/avatar/' . Auth::user()->avatar) }}" alt="avatar"
                                                 width="65" height="65" />
