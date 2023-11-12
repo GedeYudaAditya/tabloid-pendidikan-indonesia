@@ -597,4 +597,173 @@ class AdminController extends Controller
             return redirect()->route('admin.management-sponsor.index')->with('error', 'Data gagal ditambahkan');
         }
     }
+
+    public function managementSponsorEdit($id)
+    {
+        $data = [
+            'title' => 'Admin || Management Sponsor || Edit',
+            'sponsor' => Sponsor::findOrFail($id)
+        ];
+        return view('admin.management-sponsor.edit', $data);
+    }
+
+    public function managementSponsorUpdate($id, Request $request)
+    {
+        $request->validate([
+            'nama' => 'required|unique:sponsors,nama,' . $id,
+            'gambar' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'link' => 'required',
+        ]);
+
+        try {
+            DB::beginTransaction();
+            // make slug
+            $slug = Str::slug($request->nama . '-' . time());
+
+            // upload image
+            if ($request->gambar) {
+                $imageName = time() . '.' . $request->gambar->extension();
+                $request->gambar->move(public_path('img/sponsor'), $imageName);
+
+                // delete image
+                if (Sponsor::findOrFail($id)->gambar) {
+                    unlink(public_path('img/sponsor/' . Sponsor::findOrFail($id)->gambar));
+                }
+            } else {
+                $imageName = Sponsor::findOrFail($id)->gambar;
+            }
+
+            Sponsor::findOrFail($id)->update([
+                'nama' => $request->nama,
+                'gambar' => $imageName,
+                'link' => $request->link,
+            ]);
+
+            DB::commit();
+            return redirect()->route('admin.management-sponsor.index')->with('success', 'Data berhasil diubah');
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return redirect()->route('admin.management-sponsor.index')->with('error', 'Data gagal diubah');
+        }
+    }
+
+    public function managementSponsorDelete($id)
+    {
+        $sponsor = Sponsor::findOrFail($id);
+        // delete image
+        if ($sponsor->gambar) {
+            unlink(public_path('img/sponsor/' . $sponsor->gambar));
+        }
+        $sponsor->delete();
+
+        return redirect()->route('admin.management-sponsor.index')->with('success', 'Data berhasil dihapus');
+    }
+
+    public function userManagementCreate()
+    {
+        $data = [
+            'title' => 'Admin || User Management || Create'
+        ];
+        return view('admin.create', $data);
+    }
+
+    public function userManagementStore(Request $request)
+    {
+        // dd($request->all());
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|unique:users,email',
+            'level' => 'required',
+            'password' => 'required|min:8|confirmed',
+            'password_confirmation' => 'required',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+        ]);
+
+        // dd($request->level);
+
+        // check avatar
+        if ($request->avatar) {
+            // upload image
+            $imageName = time() . '.' . $request->avatar->extension();
+            $request->avatar->move(public_path('img/avatar'), $imageName);
+        } else {
+            $imageName = null;
+        }
+
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'level' => $request->level,
+            'password' => bcrypt($request->password),
+            'avatar' => $imageName
+        ]);
+
+        return redirect()->route('admin.home')->with('success', 'Data berhasil ditambahkan');
+    }
+
+    public function userManagementEdit($id)
+    {
+        $data = [
+            'title' => 'Admin || User Management || Edit',
+            'user' => User::findOrFail($id)
+        ];
+        return view('admin.edit', $data);
+    }
+
+    public function userManagementUpdate($id, Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|unique:users,email,' . $id,
+            'level' => 'required',
+            'password' => 'nullable|min:8|confirmed',
+            'password_confirmation' => 'nullable',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+        ]);
+
+        // check avatar
+        if ($request->avatar) {
+            // upload image
+            $imageName = time() . '.' . $request->avatar->extension();
+            $request->avatar->move(public_path('img/avatar'), $imageName);
+
+            // delete image
+            if (User::findOrFail($id)->avatar) {
+                unlink(public_path('img/avatar/' . User::findOrFail($id)->avatar));
+            }
+        } else {
+            $imageName = User::findOrFail($id)->avatar;
+        }
+
+        if ($request->password) {
+            User::findOrFail($id)->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'level' => $request->level,
+                'password' => bcrypt($request->password),
+                'avatar' => $imageName
+            ]);
+        } else {
+            User::findOrFail($id)->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'level' => $request->level,
+                'avatar' => $imageName
+            ]);
+        }
+
+        return redirect()->route('admin.home')->with('success', 'Data berhasil diubah');
+    }
+
+    public function userManagementDelete($id)
+    {
+        $user = User::findOrFail($id);
+        // delete image
+        if ($user->avatar) {
+            unlink(public_path('img/avatar/' . $user->avatar));
+        }
+        $user->delete();
+
+        return redirect()->route('admin.home')->with('success', 'Data berhasil dihapus');
+    }
 }

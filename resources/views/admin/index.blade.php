@@ -107,8 +107,10 @@
                                 @if (Auth::user()->level == 'admin')
                                     <td>
                                         {{-- <a href="#" class="btn btn-sm btn-primary">Detail</a> --}}
-                                        <a href="#" class="btn btn-sm btn-warning">Edit</a>
-                                        <form action="#" method="post" class="d-inline">
+                                        <a href="{{ route('admin.user-management.edit', $item->id) }}"
+                                            class="btn btn-sm btn-warning">Edit</a>
+                                        <form action="{{ route('admin.user-management.delete', $item->id) }}"
+                                            method="post" class="d-inline">
                                             @csrf
                                             @method('delete')
                                             <button type="submit" class="btn btn-sm btn-danger"
@@ -123,6 +125,38 @@
                 {{-- <a href="{{ route('admin.user.create') }}" class="btn btn-primary mt-3">Tambah User</a> --}}
             </div>
         </div>
+
+        {{-- Arsip Tahunan Berita --}}
+        @if (Auth::user()->level == 'admin')
+            <div class="card mt-3">
+                <div class="card-header">
+                    <div class="row justify-content-between">
+                        <h5 class="card-title col-2">Arsip Berita</h5>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table id="table2" class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama Berita</th>
+                                <th>Tahun</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($berita as $item)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td><a href="{{ route('admin.berita.detail', $item->slug) }}">{{ $item->judul }}</a>
+                                    </td>
+                                    <td>{{ $item->created_at->format('Y') }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
     </div>
 @endsection
 
@@ -130,6 +164,14 @@
     <script>
         $(document).ready(function() {
             $('#table').DataTable();
+        });
+
+        $(document).ready(function() {
+            $('#table2').DataTable({
+                "order": [
+                    [2, "desc"]
+                ]
+            });
         });
     </script>
 @endsection
