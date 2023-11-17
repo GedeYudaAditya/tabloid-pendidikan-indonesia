@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('judul');
             $table->string('slug')->unique();
-            $table->string('penulis');
+            // $table->string('penulis');
             $table->text('isi');
             $table->longText('gambar');
-            $table->longText('attachment');
+            $table->longText('attachment')->nullable();
             $table->enum('status', ['publish', 'draft'])->default('draft');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();

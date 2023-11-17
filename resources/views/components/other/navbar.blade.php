@@ -1,32 +1,62 @@
+<style type="text/css">
+    .sidebar li .submenu {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .sidebar .nav-link {
+        font-weight: 500;
+        color: var(--bs-dark);
+    }
+
+    .sidebar .nav-link:hover {
+        color: var(--bs-primary);
+    }
+
+    .border-mb {
+        border-bottom: 1px solid var(--bs-secondary);
+    }
+</style>
+
 <!-- Sidebar-->
 <div class="border-end app-bg-secondary" id="sidebar-wrapper" style="height: 100vh">
     <div class="sidebar-heading border-bottom app-bg-secondary text-white" style="font-weight: bolder">
         Tabloid Pendi.Indo
     </div>
-    <div class="list-group list-group-flush app-bg-secondary">
-        @forelse ($kabupaten as $item)
-            {{-- <a class="list-group-item list-group-item-action list-group-item-light p-3 app-bg-secondary" href="#!">
-                {{ $item->nama_kabupaten }}
-            </a> --}}
-            {{-- dropdown --}}
-            <div class="dropend">
-                <button
-                    class="list-group-item list-group-item-action list-group-item-light p-2 app-bg-secondary dropdown-toggle"
-                    type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                    {{ $item->nama_kabupaten }}
-                </button>
-                <ul class="dropdown-menu dropdown-menu-dark shadow" aria-labelledby="dropdownMenuButton1"
-                    style="border-radius: 0px">
-                    @forelse ($item->kecamatan as $kecamatan)
-                        <li><a class="dropdown-item"
-                                href="{{ route('guest.berita.kecamatan', $kecamatan->slug) }}">{{ $kecamatan->nama_kecamatan }}</a>
-                        </li>
-                    @empty
-                        <li><a class="dropdown-item" href="#">Belum ada kecamatan</a></li>
-                    @endforelse
-                </ul>
-            </div>
-        @empty
-        @endforelse
+    <div class="list-group sidebar list-group-flush app-bg-secondary">
+        <div style="height: 80vh; overflow-y: auto">
+            <ul class="nav flex-column p-1 bg-light" id="nav_accordion">
+                @forelse ($kabupaten as $item)
+                    <li class="nav-item border-mb">
+                        <a class="nav-link text-dark" data-bs-toggle="collapse" style="font-weight: bolder"
+                            data-bs-target="#menu_item-{{ $item->id }}-nav" href="#">
+                            {{ $item->nama_kabupaten }}
+                            <i class="fas fa-chevron-down float-end"></i>
+                        </a>
+                        <ul id="menu_item-{{ $item->id }}-nav" class="submenu collapse"
+                            data-bs-parent="#nav_accordion">
+                            @forelse ($item->kecamatan as $kecamatan)
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark"
+                                        href="{{ route('guest.berita.kecamatan', $kecamatan->slug) }}">
+                                        {{ $kecamatan->nama_kecamatan }}
+                                    </a>
+                                </li>
+                            @empty
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" href="#">
+                                        Belum ada kecamatan
+                                    </a>
+                                </li>
+                            @endforelse
+                        </ul>
+                    </li>
+                @empty
+                @endforelse
+            </ul>
+        </div>
     </div>
 </div>

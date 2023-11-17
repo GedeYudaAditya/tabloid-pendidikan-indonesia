@@ -18,6 +18,18 @@
     </div>
 
     <div class="container mb-3">
+        {{-- error input --}}
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+
+                </ul>
+            </div>
+        @endif
+
         <form action="{{ route('redaksi.berita-unpublish.store') }}" method="post" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
@@ -42,6 +54,20 @@
                 </select>
                 <div id="help" class="form-text">
                     Kategori liputan untuk berita di publikasikan.
+                </div>
+            </div>
+
+            {{-- volume berita --}}
+            <div class="mb-3">
+                <label for="volume" class="form-label">Volume Berita</label>
+                <select class="form-select" name="volume" id="volume" aria-label="Default select example"
+                    aria-describedby="volumeHelp">
+                    <option selected disabled>Pilih Volume Berita</option>
+                    <option value="V1">Volume 1</option>
+                    <option value="V2">Volume 2</option>
+                </select>
+                <div id="volumeHelp" class="form-text">
+                    Masukkan volume berita.
                 </div>
             </div>
 

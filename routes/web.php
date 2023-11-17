@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\JurnalisController;
 use App\Http\Controllers\RedaksiController;
 use App\Http\Controllers\ReporterController;
 use Illuminate\Support\Facades\Route;
@@ -128,6 +129,39 @@ Route::middleware(['auth', 'role'])->name('admin')->prefix('/admin')->group(func
         Route::post('/{id}/edit', [AdminController::class, 'userManagementUpdate'])->name('.update');
         Route::delete('/{id}/delete', [AdminController::class, 'userManagementDelete'])->name('.delete');
     });
+
+    // Buku
+    Route::prefix('/buku')->name('.buku')->group(function () {
+        Route::get('/', [AdminController::class, 'buku'])->name('.index');
+        Route::get('/create', [AdminController::class, 'bukuCreate'])->name('.create');
+        Route::post('/create', [AdminController::class, 'bukuStore'])->name('.store');
+        Route::get('/{id}/edit', [AdminController::class, 'bukuEdit'])->name('.edit');
+        Route::post('/{id}/edit', [AdminController::class, 'bukuUpdate'])->name('.update');
+        Route::delete('/{id}/delete', [AdminController::class, 'bukuDelete'])->name('.delete');
+    });
+
+    // Event
+    Route::prefix('/event')->name('.event')->group(function () {
+        Route::get('/', [AdminController::class, 'event'])->name('.index');
+        Route::get('/create', [AdminController::class, 'eventCreate'])->name('.create');
+        Route::post('/create', [AdminController::class, 'eventStore'])->name('.store');
+        Route::get('/{id}/edit', [AdminController::class, 'eventEdit'])->name('.edit');
+        Route::post('/{id}/edit', [AdminController::class, 'eventUpdate'])->name('.update');
+        Route::delete('/{id}/delete', [AdminController::class, 'eventDelete'])->name('.delete');
+    });
+
+    // jurnal-artikel
+    Route::prefix('/jurnal-artikel')->name('.jurnal-artikel')->group(function () {
+        Route::get('/', [AdminController::class, 'jurnalArtikel'])->name('.index');
+        // ubah status artikel
+        Route::put('/{id}/ubah-status', [AdminController::class, 'artikelUpdateStatus'])->name('.artikel.update-status');
+        // Show artikel
+        Route::get('/{id}/show', [AdminController::class, 'artikelShow'])->name('.artikel.show');
+        // ubah status jurnal
+        Route::put('/{id}/ubah-status-jurnal', [AdminController::class, 'jurnalUpdateStatus'])->name('.jurnal.update-status');
+        // Show jurnal
+        Route::get('/{id}/show-jurnal', [AdminController::class, 'jurnalShow'])->name('.jurnal.show');
+    });
 });
 
 Route::middleware(['auth', 'role'])->name('redaksi')->prefix('redaksi')->group(function () {
@@ -173,6 +207,31 @@ Route::middleware(['auth', 'role'])->name('reporter')->prefix('reporter')->group
 
         // upload image ckeditor
         Route::post('/upload', [ReporterController::class, 'upload'])->name('.upload');
+    });
+});
+
+// jurnalis
+Route::middleware(['auth', 'role'])->name('jurnalis')->prefix('jurnalis')->group(function () {
+    Route::get('/home', [JurnalisController::class, 'home'])->name('.home');
+
+    // jurnal
+    Route::prefix('/jurnal')->name('.jurnal')->group(function () {
+        Route::get('/', [JurnalisController::class, 'jurnal'])->name('.index');
+        Route::get('/create', [JurnalisController::class, 'jurnalCreate'])->name('.create');
+        Route::post('/create', [JurnalisController::class, 'jurnalStore'])->name('.store');
+        Route::get('/{id}/edit', [JurnalisController::class, 'jurnalEdit'])->name('.edit');
+        Route::post('/{id}/edit', [JurnalisController::class, 'jurnalUpdate'])->name('.update');
+        Route::delete('/{id}/delete', [JurnalisController::class, 'jurnalDestroy'])->name('.delete');
+    });
+
+    // artikel
+    Route::prefix('/artikel')->name('.artikel')->group(function () {
+        Route::get('/', [JurnalisController::class, 'artikel'])->name('.index');
+        Route::get('/create', [JurnalisController::class, 'artikelCreate'])->name('.create');
+        Route::post('/create', [JurnalisController::class, 'artikelStore'])->name('.store');
+        Route::get('/{id}/edit', [JurnalisController::class, 'artikelEdit'])->name('.edit');
+        Route::post('/{id}/edit', [JurnalisController::class, 'artikelUpdate'])->name('.update');
+        Route::delete('/{id}/delete', [JurnalisController::class, 'artikelDelete'])->name('.delete');
     });
 });
 

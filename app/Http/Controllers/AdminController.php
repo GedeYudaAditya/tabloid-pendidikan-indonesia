@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Artikle;
 use App\Models\Berita;
+use App\Models\Buku;
+use App\Models\Event;
+use App\Models\Jurnal;
 use App\Models\Kabupaten;
 use App\Models\Kecamatan;
 use App\Models\Liputan;
@@ -24,7 +28,9 @@ class AdminController extends Controller
             'berita' => Berita::where('status', 'publish')->get(),
             'kecamatan' => Kecamatan::all(),
             'kabupaten' => Kabupaten::all(),
-            'user' => User::where('level', '!=', 'user')->where('level', '!=', 'admin')->get(),
+            'user' => User::where('level', '!=', 'user')
+                // ->where('level', '!=', 'admin')
+                ->get(),
         ];
         return view('admin.index', $data);
     }
@@ -765,5 +771,309 @@ class AdminController extends Controller
         $user->delete();
 
         return redirect()->route('admin.home')->with('success', 'Data berhasil dihapus');
+    }
+
+    public function buku()
+    {
+        $data = [
+            'title' => 'Admin || Buku',
+            'buku' => Buku::all()
+        ];
+        return view('admin.buku.index', $data);
+    }
+
+    public function bukuCreate()
+    {
+        $data = [
+            'title' => 'Admin || Buku || Create'
+        ];
+        return view('admin.buku.create', $data);
+    }
+
+    public function bukuStore(Request $request)
+    {
+        $request->validate([
+            'judul' => 'required|unique:bukus,judul',
+            'penulis' => 'required',
+            'sinopsis' => 'required',
+            'gambar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'status' => 'required'
+        ]);
+
+        try {
+            DB::beginTransaction();
+            // make slug
+            $slug = Str::slug($request->judul . '-' . time());
+
+            // upload image
+            $imageName = time() . '.' . $request->gambar->extension();
+            $request->gambar->move(public_path('img/buku'), $imageName);
+
+            Buku::create([
+                'judul' => $request->judul,
+                'slug' => $slug,
+                'penulis' => $request->penulis,
+                'sinopsis' => $request->sinopsis,
+                'gambar' => $imageName,
+                'status' => $request->status
+            ]);
+
+            DB::commit();
+            return redirect()->route('admin.buku.index')->with('success', 'Data berhasil ditambahkan');
+        } catch (\Throwable $th) {
+            DB::rollback();
+            dd($th);
+            return redirect()->route('admin.buku.index')->with('error', 'Data gagal ditambahkan');
+        }
+    }
+
+    public function bukuEdit($id)
+    {
+        $data = [
+            'title' => 'Admin || Buku || Edit',
+            'buku' => Buku::findOrFail($id)
+        ];
+        return view('admin.buku.edit', $data);
+    }
+
+    public function bukuUpdate($id, Request $request)
+    {
+        $request->validate([
+            'judul' => 'required|unique:bukus,judul,' . $id,
+            'penulis' => 'required',
+            'sinopsis' => 'required',
+            'gambar' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'status' => 'required'
+        ]);
+
+        try {
+            DB::beginTransaction();
+            // make slug
+            $slug = Str::slug($request->judul . '-' . time());
+
+            // upload image
+            if ($request->gambar) {
+                $imageName = time() . '.' . $request->gambar->extension();
+                $request->gambar->move(public_path('img/buku'), $imageName);
+
+                // delete image
+                if (Buku::findOrFail($id)->gambar) {
+                    unlink(public_path('img/buku/' . Buku::findOrFail($id)->gambar));
+                }
+            } else {
+                $imageName = Buku::findOrFail($id)->gambar;
+            }
+
+            Buku::findOrFail($id)->update([
+                'judul' => $request->judul,
+                'slug' => $slug,
+                'penulis' => $request->penulis,
+                'sinopsis' => $request->sinopsis,
+                'gambar' => $imageName,
+                'status' => $request->status
+            ]);
+
+            DB::commit();
+            return redirect()->route('admin.buku.index')->with('success', 'Data berhasil diubah');
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return redirect()->route('admin.buku.index')->with('error', 'Data gagal diubah');
+        }
+    }
+
+    public function bukuDelete($id)
+    {
+        $buku = Buku::findOrFail($id);
+        // delete image
+        if ($buku->gambar) {
+            unlink(public_path('img/buku/' . $buku->gambar));
+        }
+        $buku->delete();
+
+        return redirect()->route('admin.buku.index')->with('success', 'Data berhasil dihapus');
+    }
+
+    // event
+    public function event()
+    {
+        $data = [
+            'title' => 'Admin || Event',
+            'event' => Event::all()
+        ];
+        return view('admin.event.index', $data);
+    }
+
+    public function eventCreate()
+    {
+        $data = [
+            'title' => 'Admin || Event || Create'
+        ];
+        return view('admin.event.create', $data);
+    }
+
+    public function eventStore(Request $request)
+    {
+        $request->validate([
+            'judul' => 'required|unique:events,judul',
+            'isi' => 'required',
+            'jenis' => 'required',
+            'gambar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+        ]);
+
+        try {
+            DB::beginTransaction();
+            // make slug
+            $slug = Str::slug($request->judul . '-' . time());
+
+            // upload image
+            $imageName = time() . '.' . $request->gambar->extension();
+            $request->gambar->move(public_path('img/event'), $imageName);
+
+            Event::create([
+                'judul' => $request->judul,
+                'slug' => $slug,
+                'isi' => $request->isi,
+                'jenis' => $request->jenis,
+                'gambar' => $imageName,
+                'user_id' => auth()->user()->id
+            ]);
+
+            DB::commit();
+            return redirect()->route('admin.event.index')->with('success', 'Data berhasil ditambahkan');
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return redirect()->route('admin.event.index')->with('error', 'Data gagal ditambahkan');
+        }
+    }
+
+    public function eventEdit($id)
+    {
+        $data = [
+            'title' => 'Admin || Event || Edit',
+            'event' => Event::findOrFail($id)
+        ];
+        return view('admin.event.edit', $data);
+    }
+
+    public function eventUpdate($id, Request $request)
+    {
+        $request->validate([
+            'judul' => 'required|unique:events,judul,' . $id,
+            'isi' => 'required',
+            'jenis' => 'required',
+            'gambar' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+        ]);
+
+        try {
+            DB::beginTransaction();
+            // make slug
+            $slug = Str::slug($request->judul . '-' . time());
+
+            // upload image
+            if ($request->gambar) {
+                $imageName = time() . '.' . $request->gambar->extension();
+                $request->gambar->move(public_path('img/event'), $imageName);
+
+                // delete image
+                if (Event::findOrFail($id)->gambar) {
+                    unlink(public_path('img/event/' . Event::findOrFail($id)->gambar));
+                }
+            } else {
+                $imageName = Event::findOrFail($id)->gambar;
+            }
+
+            Event::findOrFail($id)->update([
+                'judul' => $request->judul,
+                'slug' => $slug,
+                'isi' => $request->isi,
+                'jenis' => $request->jenis,
+                'gambar' => $imageName,
+                'user_id' => auth()->user()->id
+            ]);
+
+            DB::commit();
+            return redirect()->route('admin.event.index')->with('success', 'Data berhasil diubah');
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return redirect()->route('admin.event.index')->with('error', 'Data gagal diubah');
+        }
+    }
+
+    public function eventDelete($id)
+    {
+        $event = Event::findOrFail($id);
+        // delete image
+        if ($event->gambar) {
+            unlink(public_path('img/event/' . $event->gambar));
+        }
+        $event->delete();
+
+        return redirect()->route('admin.event.index')->with('success', 'Data berhasil dihapus');
+    }
+
+    public function jurnalArtikel()
+    {
+        $data = [
+            'title' => 'Admin || Jurnal Artikel',
+            'jurnal' => Jurnal::all(),
+            'artikel' => Artikle::all()
+        ];
+        return view('admin.manajemen-jurnal-artikel.index', $data);
+    }
+
+    // jurnal show
+    public function jurnalShow($id)
+    {
+        $data = [
+            'title' => 'Admin || Jurnal || Show',
+            'jurnal' => Jurnal::findOrFail($id)
+        ];
+        return view('admin.manajemen-jurnal-artikel.jurnal-show', $data);
+    }
+
+    // artikel show
+    public function artikelShow($id)
+    {
+        $data = [
+            'title' => 'Admin || Artikel || Show',
+            'artikel' => Artikle::findOrFail($id)
+        ];
+        return view('admin.manajemen-jurnal-artikel.artikel-show', $data);
+    }
+
+    // put update jurnal status
+    public function jurnalUpdateStatus($id)
+    {
+
+        $jurnal = Jurnal::findOrFail($id);
+        if ($jurnal->status == 'publish') {
+            $jurnal->update([
+                'status' => 'draft'
+            ]);
+        } else {
+            $jurnal->update([
+                'status' => 'publish'
+            ]);
+        }
+
+        return redirect()->route('admin.jurnal-artikel.index')->with('success', 'Data berhasil diubah');
+    }
+
+    // put update artikel status
+    public function artikelUpdateStatus($id)
+    {
+
+        $artikel = Artikle::findOrFail($id);
+        if ($artikel->status == 'publish') {
+            $artikel->update([
+                'status' => 'draft'
+            ]);
+        } else {
+            $artikel->update([
+                'status' => 'publish'
+            ]);
+        }
+
+        return redirect()->route('admin.jurnal-artikel.index')->with('success', 'Data berhasil diubah');
     }
 }

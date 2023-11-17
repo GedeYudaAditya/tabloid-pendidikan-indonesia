@@ -50,6 +50,27 @@
                     Manajemen Sponsor
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link {{ Route::is('admin.buku*') ? 'active' : '' }}"
+                    href="{{ route('admin.buku.index') }}">
+                    <span data-feather="file-text"></span>
+                    Manajemen Buku
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ Route::is('admin.event*') ? 'active' : '' }}"
+                    href="{{ route('admin.event.index') }}">
+                    <span data-feather="file-text"></span>
+                    Manajemen Event
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ Route::is('admin.jurnal-artikel*') ? 'active' : '' }}"
+                    href="{{ route('admin.jurnal-artikel.index') }}">
+                    <span data-feather="file-text"></span>
+                    Manajemen Artikel dan Jurnal
+                </a>
+            </li>
         </ul>
 
         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">

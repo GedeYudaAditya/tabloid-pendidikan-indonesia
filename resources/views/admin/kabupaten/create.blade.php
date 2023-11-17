@@ -16,6 +16,18 @@
     </div>
 
     <div class="container">
+        {{-- error input --}}
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+
+                </ul>
+            </div>
+        @endif
+
         <form action="{{ route('admin.kabupaten.store') }}" method="post">
             @csrf
             <div class="mb-3">

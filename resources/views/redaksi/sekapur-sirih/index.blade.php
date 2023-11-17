@@ -33,7 +33,7 @@
             </div>
         @else
             <h6 class="text-center">
-                Tidak ada hari peringatan
+                Tidak ada Sekapur Sirih
             </h6>
         @endif
 
@@ -41,12 +41,12 @@
         <form action="{{ route('redaksi.sekapur-sirih.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="row">
-                <div class="col-md-6 mb-3">
+                {{-- <div class="col-md-6 mb-3">
                     <label for="nama">Nama</label>
                     <input type="text" class="form-control" id="nama" name="judul" required>
-                </div>
+                </div> --}}
                 {{-- file gambar --}}
-                <div class="col-md-6 mb-3">
+                <div class="col-md-12 mb-3">
                     <label for="gambar">Isi Sekapur Sirih</label>
                     <textarea name="isi" id="isi" cols="30" rows="10" class="form-control" required></textarea>
                 </div>
@@ -54,5 +54,16 @@
             <button class="btn btn-primary" type="submit">Tambah</button>
         </form>
 
+        {{-- error input --}}
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+
+                </ul>
+            </div>
+        @endif
     </div>
 @endsection

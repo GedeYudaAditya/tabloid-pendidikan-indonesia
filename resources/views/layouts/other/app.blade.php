@@ -7,6 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Selamat Datang</title>
 
+    {{-- icon web --}}
+    <link rel="icon" href="{{ asset('img/logo.png') }}" type="image/x-icon">
+
     {{-- Bootsrap --}}
     <link rel="stylesheet" href="{{ asset('bootstrap-5.0.2-dist/css/bootstrap.min.css') }}">
 
@@ -55,6 +58,27 @@
                     {{-- search --}}
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
+
+                            {{-- artikel --}}
+                            <li class="nav-item mx-2">
+                                <a class="nav-link text-white" href="#">Jurnal & Artikel</a>
+                            </li>
+
+                            {{-- buku --}}
+                            <li class="nav-item mx-2">
+                                <a class="nav-link text-white" href="#">Buku</a>
+                            </li>
+
+                            {{-- event --}}
+                            <li class="nav-item mx-2">
+                                <a class="nav-link text-white" href="#">Event</a>
+                            </li>
+
+                            {{-- about --}}
+                            <li class="nav-item mx-2">
+                                <a class="nav-link text-white" href="{{ route('about') }}">About</a>
+                            </li>
+
                             {{-- search --}}
                             <form class="d-flex mx-2">
                                 <input class="form-control me-2" type="search" placeholder="Search"
@@ -62,10 +86,6 @@
                                 <button class="btn btn-outline-light" type="submit">Search</button>
                             </form>
 
-                            {{-- about --}}
-                            <li class="nav-item mx-2">
-                                <a class="nav-link text-white" href="{{ route('about') }}">About</a>
-                            </li>
                             {{-- button login & register --}}
                             @if (Auth::check())
                                 <li class="nav-item dropdown">
@@ -89,7 +109,7 @@
                                     <a class="nav-link text-white mx-2" href="{{ route('auth') }}">Login</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-white ms-2" href="{{ route('register') }}">Register</a>
+                                    <a class="nav-link text-white mx-2" href="{{ route('register') }}">Register</a>
                                 </li>
                             @endif
                         </ul>

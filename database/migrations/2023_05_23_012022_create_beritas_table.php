@@ -21,6 +21,7 @@ return new class extends Migration
             $table->longText('old_isi')->nullable();
             $table->longText('gambar');
             $table->bigInteger('like')->default(0);
+            $table->enum('volume', ['V1', 'V2']);
             $table->enum('status', ['publish', 'draft', 'ditolak', 'revisi'])->default('draft');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();

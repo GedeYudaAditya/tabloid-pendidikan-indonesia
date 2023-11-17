@@ -59,6 +59,7 @@ class RedaksiController extends Controller
             'gambar' => 'nullable',
             'gambar.*' => 'nullable|image|mimes:jpg,jpeg,png|max:10240',
             'liputan_id' => 'required',
+            'volume' => 'required',
             // 'slug' => 'required',
         ]);
 
@@ -107,6 +108,7 @@ class RedaksiController extends Controller
                 'slug' => $slug,
                 'user_id' => auth()->user()->id,
                 'status' => 'draft',
+                'volume' => $request->volume,
             ];
 
             Berita::create($data);
@@ -157,6 +159,7 @@ class RedaksiController extends Controller
             'isi' => 'required',
             'gambar' => 'nullable',
             'gambar.*' => 'nullable|image|mimes:jpg,jpeg,png|max:10240',
+            'volume' => 'required',
             // 'slug' => 'required',
         ]);
 
@@ -192,6 +195,7 @@ class RedaksiController extends Controller
                     'slug' => $slug,
                     'user_id' => auth()->user()->id,
                     'status' => 'revisi',
+                    'volume' => $request->volume,
                 ];
             } elseif ($berita->status == 'revisi') {
                 $data = [
@@ -202,6 +206,7 @@ class RedaksiController extends Controller
                     'slug' => $slug,
                     'user_id' => auth()->user()->id,
                     'status' => 'revisi',
+                    'volume' => $request->volume,
                 ];
             } else {
                 $data = [
@@ -211,6 +216,7 @@ class RedaksiController extends Controller
                     'slug' => $slug,
                     'user_id' => auth()->user()->id,
                     'status' => 'draft',
+                    'volume' => $request->volume,
                 ];
             }
 
@@ -347,7 +353,7 @@ class RedaksiController extends Controller
     public function storeAndUpdateSekapurSirih(Request $request)
     {
         $request->validate([
-            'judul' => 'required',
+            // 'judul' => 'required',
             'isi' => 'required',
         ]);
 
@@ -356,10 +362,10 @@ class RedaksiController extends Controller
 
             $sekaps = SekapurSirih::get()->first();
 
-            $slug = Str::slug($request->judul . '-' . time());
+            $slug = Str::slug('sekapur' . '-' . time());
 
             $data = [
-                'judul' => $request->judul,
+                'judul' => 'sekapur',
                 'slug' => $slug,
                 'isi' => $request->isi,
             ];

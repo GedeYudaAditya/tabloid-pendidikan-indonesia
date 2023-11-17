@@ -22,13 +22,54 @@
             /* fallback for old browsers */
             background: #4facfe;
             /* Chrome 10-25,
-                                                                                                                                        Safari 5.1-6 */
+                                                                                                                                                                    Safari 5.1-6 */
             background: -webkit-linear-gradient(to bottom right, rgba(79, 172, 254,
                         1), rgba(0, 242, 254, 1));
             /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+,
-                                                                                                                                        Safari 7+ */
+                                                                                                                                                                    Safari 7+ */
             background: linear-gradient(to bottom right, rgba(79, 172, 254, 1), rgba(0,
                         242, 254, 1))
+        }
+    </style>
+    <style>
+        .social-btn-sp #social-links {
+            margin: 0 auto;
+            max-width: 500px;
+        }
+
+        .social-btn-sp #social-links ul li {
+            display: inline-block;
+        }
+
+        .social-btn-sp #social-links ul li a {
+            padding: 15px;
+            border: 1px solid #ccc;
+            margin: 1px;
+            font-size: 30px;
+        }
+
+        #social-links {
+            padding: 0px;
+            display: inline-table;
+        }
+
+        #social-links ul {
+            padding: 0px;
+            /* margin: 0px; */
+        }
+
+        #social-links ul li {
+            padding: 0px;
+            display: inline;
+        }
+
+        #social-links ul li a {
+            padding: 10px;
+            /* border: 1px solid #ccc; */
+            margin: 1px;
+            font-size: 40px;
+            /* background: #e3e3ea; */
+            color: #0c356a;
         }
     </style>
 @endsection
@@ -115,6 +156,13 @@
                             <a href="{{ route('auth') }}"><i class="far fa-heart text-muted"></i></a>
                         @endif
                         <span id="like-text">{{ $berita->like }}</span>
+                        <i class="me-3"></i>
+                        {{-- shere icon --}}
+                        <button type="button" class="shere-button" data-bs-toggle="modal"
+                            url="{{ route('guest.berita.detail', $berita->slug) }}" data-bs-target="#exampleModal">
+                            <i class="fas fa-share-alt shere-icon text-muted"></i>
+                            <span>Share</span>
+                        </button>
                     </p>
 
                     <hr>
@@ -404,4 +452,24 @@
             });
         });
     </script>
+
+    {{-- modal share --}}
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center" id="exampleModalLabel">
+                        Share to social media
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    {!! Share::page(url(route('guest.berita.detail', $berita->slug)))->facebook()->twitter()->whatsapp()->telegram() !!}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection

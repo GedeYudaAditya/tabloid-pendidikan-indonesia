@@ -16,6 +16,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\DB;
+use Jorenvh\Share\Share;
 
 class Controller extends BaseController
 {
@@ -30,6 +31,18 @@ class Controller extends BaseController
             ->get()
             ->first();
 
+        $shareButtons = new Share();
+
+        $shareButtons = $shareButtons->page(
+            url()->current()
+        )->facebook()
+            ->twitter()
+            // ->linkedin()
+            ->whatsapp()
+            ->telegram();
+        // ->reddit()
+        // ->pinterest();
+
         $data = [
             'title' => 'Landing Page',
             'kabupaten' => Kabupaten::all(),
@@ -39,7 +52,10 @@ class Controller extends BaseController
             'kecamatanPopulerId' => $kecamatanPopulerId ? $kecamatanPopulerId->kecamatan->id : null,
             'kecamatanPopularName' => $kecamatanPopulerId ? $kecamatanPopulerId->kecamatan->nama_kecamatan : null,
             'sponsors' => Sponsor::all(),
+            'shareButtons' => $shareButtons,
         ];
+
+
         return view('index', $data);
     }
 

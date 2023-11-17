@@ -205,12 +205,18 @@ class ReporterController extends Controller
             if ($liputan->gambar) {
                 // string json to array
                 $old_image = json_decode($liputan->gambar);
-
-                foreach ($old_image as $old) {
-                    // remove image
+                if (is_array($old_image)) {
+                    foreach ($old_image as $old) {
+                        // remove image
+                        // check if image exists in folder
+                        if (file_exists(public_path('img/liputan/' . $old))) {
+                            unlink(public_path('img/liputan/' . $old));
+                        }
+                    }
+                } else {
                     // check if image exists in folder
-                    if (file_exists(public_path('img/liputan/' . $old))) {
-                        unlink(public_path('img/liputan/' . $old));
+                    if (file_exists(public_path('img/liputan/' . $old_image))) {
+                        unlink(public_path('img/liputan/' . $old_image));
                     }
                 }
             }
