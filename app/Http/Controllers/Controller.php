@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Artikle;
 use App\Models\Berita;
+use App\Models\Buku;
+use App\Models\Event;
 use App\Models\HariPeringatan;
+use App\Models\Jurnal;
 use App\Models\Kabupaten;
 use App\Models\Kecamatan;
 use App\Models\Program;
@@ -147,7 +151,7 @@ class Controller extends BaseController
         $data = [
             'title' => 'Berita Kecamatan',
             'kabupaten' => Kabupaten::all(),
-            'berita' => Berita::where('kecamatan_id', Kecamatan::where('slug', $slug)->firstOrFail()->id)->get(),
+            'berita' => Berita::where('kecamatan_id', Kecamatan::where('slug', $slug)->firstOrFail()->id)->paginate(6),
             'kecamatan_now' => Kecamatan::where('slug', $slug)->firstOrFail(),
             'sponsors' => Sponsor::all(),
         ];
@@ -308,5 +312,181 @@ class Controller extends BaseController
                 'message' => 'Gagal get like berita. ' . $th->getMessage(),
             ], 500);
         }
+    }
+
+    public function search(Request $request)
+    {
+        $request->validate([
+            'search' => 'required|string',
+        ]);
+
+        $data = [
+            'title' => 'Search',
+            'kabupaten' => Kabupaten::all(),
+            'berita' => Berita::where('judul', 'like', '%' . $request->search . '%')->where('status', 'publish')->orderBy('created_at', 'desc')->paginate(6),
+        ];
+        return view('search', $data);
+    }
+
+    public function jurnalArtikel()
+    {
+        $shareButtons = new Share();
+
+        $shareButtons = $shareButtons->page(
+            url()->current()
+        )->facebook()
+            ->twitter()
+            // ->linkedin()
+            ->whatsapp()
+            ->telegram();
+        // ->reddit()
+        // ->pinterest();
+
+        $data = [
+            'title' => 'Jurnal Artikel',
+            'kabupaten' => Kabupaten::all(),
+            'jurnal' => Jurnal::where('status', 'publish')->orderBy('created_at', 'desc')->paginate(6),
+            'artikel' => Artikle::where('status', 'publish')->orderBy('created_at', 'desc')->paginate(6),
+            'sponsors' => Sponsor::all(),
+            'shareButtons' => $shareButtons
+        ];
+        return view('jurnal-artikel', $data);
+    }
+
+    public function jurnalArtikelShow($type, $slug)
+    {
+        $shareButtons = new Share();
+
+        $shareButtons = $shareButtons->page(
+            url()->current()
+        )->facebook()
+            ->twitter()
+            // ->linkedin()
+            ->whatsapp()
+            ->telegram();
+        // ->reddit()
+        // ->pinterest();
+
+        if ($type == 'jurnal') {
+            $data = [
+                'title' => 'Jurnal Artikel',
+                'kabupaten' => Kabupaten::all(),
+                'jurnalArtikel' => Jurnal::where('slug', $slug)->firstOrFail(),
+                'berita' => Berita::first(),
+                'sponsors' => Sponsor::all(),
+                'shareButtons' => $shareButtons
+            ];
+            return view('jurnal-artikel-show', $data);
+        } else if ($type == 'artikel') {
+            $data = [
+                'title' => 'Jurnal Artikel',
+                'kabupaten' => Kabupaten::all(),
+                'jurnalArtikel' => Artikle::where('slug', $slug)->firstOrFail(),
+                'berita' => Berita::first(),
+                'sponsors' => Sponsor::all(),
+                'shareButtons' => $shareButtons
+            ];
+            return view('jurnal-artikel-show', $data);
+        } else {
+            return redirect()->back()->with('error', 'Tipe tidak ditemukan.');
+        }
+    }
+
+    // buku
+    public function buku()
+    {
+        $shareButtons = new Share();
+
+        $shareButtons = $shareButtons->page(
+            url()->current()
+        )->facebook()
+            ->twitter()
+            // ->linkedin()
+            ->whatsapp()
+            ->telegram();
+        // ->reddit()
+        // ->pinterest();
+
+        $data = [
+            'title' => 'Buku',
+            'kabupaten' => Kabupaten::all(),
+            'buku' => Buku::orderBy('created_at', 'desc')->paginate(6),
+            'sponsors' => Sponsor::all(),
+            'shareButtons' => $shareButtons
+        ];
+        return view('buku', $data);
+    }
+
+    public function bukuShow($slug)
+    {
+        $shareButtons = new Share();
+
+        $shareButtons = $shareButtons->page(
+            url()->current()
+        )->facebook()
+            ->twitter()
+            // ->linkedin()
+            ->whatsapp()
+            ->telegram();
+        // ->reddit()
+        // ->pinterest();
+
+        $data = [
+            'title' => 'Buku',
+            'kabupaten' => Kabupaten::all(),
+            'buku' => Buku::where('slug', $slug)->firstOrFail(),
+            'sponsors' => Sponsor::all(),
+            'shareButtons' => $shareButtons
+        ];
+        return view('buku-show', $data);
+    }
+
+    public function event()
+    {
+        $shareButtons = new Share();
+
+        $shareButtons = $shareButtons->page(
+            url()->current()
+        )->facebook()
+            ->twitter()
+            // ->linkedin()
+            ->whatsapp()
+            ->telegram();
+        // ->reddit()
+        // ->pinterest();
+
+        $data = [
+            'title' => 'Event',
+            'kabupaten' => Kabupaten::all(),
+            'event' => Event::orderBy('created_at', 'desc')->paginate(6),
+            'sponsors' => Sponsor::all(),
+            'shareButtons' => $shareButtons
+        ];
+        return view('event', $data);
+    }
+
+    public function eventShow($slug)
+    {
+        $shareButtons = new Share();
+
+        $shareButtons = $shareButtons->page(
+            url()->current()
+        )->facebook()
+            ->twitter()
+            // ->linkedin()
+            ->whatsapp()
+            ->telegram();
+        // ->reddit()
+        // ->pinterest();
+
+        $data = [
+            'title' => 'Event',
+            'kabupaten' => Kabupaten::all(),
+            'event' => Event::where('slug', $slug)->firstOrFail(),
+            'sponsors' => Sponsor::all(),
+            'shareButtons' => $shareButtons,
+            'berita' => Berita::first(),
+        ];
+        return view('event-detail', $data);
     }
 }

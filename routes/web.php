@@ -26,6 +26,9 @@ Route::post('/register', [Controller::class, 'registerProses'])->middleware('gue
 Route::get('/logout', [Controller::class, 'logout'])->middleware('auth')->name('logout');
 Route::get('/about', [Controller::class, 'about'])->name('about');
 
+// search berita
+Route::get('/search', [Controller::class, 'search'])->name('search');
+
 // guest
 Route::middleware(['guest'])->name('guest')->prefix('/guest')->group(function () {
     Route::get('/berita', [Controller::class, 'berita'])->name('.berita');
@@ -239,4 +242,24 @@ Route::middleware(['auth', 'role'])->name('jurnalis')->prefix('jurnalis')->group
 Route::middleware(['auth', 'role'])->name('user')->prefix('user')->group(function () {
     Route::get('/home', [Controller::class, 'index'])->name('.home');
     Route::get('/berita/{slug}', [Controller::class, 'beritaDetail'])->name('.berita.detail');
+    Route::get('/berita/kabupaten/{slug}', [Controller::class, 'beritaKabupaten'])->name('.berita.kabupaten');
+    Route::get('/berita/kecamatan/{slug}', [Controller::class, 'beritaKecamatan'])->name('.berita.kecamatan');
+
+    // jurnal dan artikel
+    Route::prefix('/jurnal-artikel')->name('.jurnal-artikel')->group(function () {
+        Route::get('/', [Controller::class, 'jurnalArtikel'])->name('.index');
+        Route::get('{type}/{slug}/show', [Controller::class, 'jurnalArtikelShow'])->name('.show');
+    });
+
+    // buku
+    Route::prefix('/buku')->name('.buku')->group(function () {
+        Route::get('/', [Controller::class, 'buku'])->name('.index');
+        Route::get('/{slug}/show', [Controller::class, 'bukuShow'])->name('.show');
+    });
+
+    // event
+    Route::prefix('/event')->name('.event')->group(function () {
+        Route::get('/', [Controller::class, 'event'])->name('.index');
+        Route::get('/{slug}/show', [Controller::class, 'eventShow'])->name('.show');
+    });
 });

@@ -33,7 +33,7 @@
     @yield('other-plugin')
 </head>
 
-<body>
+<body class="sb-sidenav-toggled">
     <div class="d-flex" id="wrapper" style="position: fixed; width: 100%;">
         {{-- navbar --}}
         @include('components.other.navbar')
@@ -61,17 +61,18 @@
 
                             {{-- artikel --}}
                             <li class="nav-item mx-2">
-                                <a class="nav-link text-white" href="#">Jurnal & Artikel</a>
+                                <a class="nav-link text-white" href="{{ route('user.jurnal-artikel.index') }}">Jurnal &
+                                    Artikel</a>
                             </li>
 
                             {{-- buku --}}
                             <li class="nav-item mx-2">
-                                <a class="nav-link text-white" href="#">Buku</a>
+                                <a class="nav-link text-white" href="{{ route('user.buku.index') }}">Buku</a>
                             </li>
 
                             {{-- event --}}
                             <li class="nav-item mx-2">
-                                <a class="nav-link text-white" href="#">Event</a>
+                                <a class="nav-link text-white" href="{{ route('user.event.index') }}">Event</a>
                             </li>
 
                             {{-- about --}}
@@ -80,8 +81,8 @@
                             </li>
 
                             {{-- search --}}
-                            <form class="d-flex mx-2">
-                                <input class="form-control me-2" type="search" placeholder="Search"
+                            <form class="d-flex mx-2" action="{{ route('search') }}" method="GET">
+                                <input class="form-control me-2" type="search" placeholder="Search" name="search"
                                     aria-label="Search">
                                 <button class="btn btn-outline-light" type="submit">Search</button>
                             </form>

@@ -44,33 +44,18 @@
     </style>
 @endsection
 
-@section('hero')
-    <div class="row mb-3">
-        {{-- gambar kec with overlay text --}}
-        <div class="col-12" style="position: relative">
-            <img src="{{ asset('img/kecamatan/' . $kecamatan_now->gambar) }}" class="img-fluid"
-                style="height: 400px; width: 100%; object-fit: cover; object-position: center"
-                alt="{{ $kecamatan_now->gambar }}">
-            <div class="app-overlay-dark-bg row justify-content-center align-items-center"
-                style="position: absolute; bottom: 0; width: 100%; height: 100%;">
-                {{-- nama_kecamatan_now --}}
-                <h1 class="text-white text-center">{{ $kecamatan_now->nama_kecamatan }}</h1>
-            </div>
-        </div>
-    </div>
-@endsection
-
 @section('content')
-    @if ($berita->count() > 0)
+    @if ($artikel->count() > 0 || $jurnal->count() > 0)
         {{-- sekapur sirih --}}
-        <h4>Berita Terbaru</h4>
+        {{-- sekapur sirih --}}
+        <h4 class="mt-5">Arikel Terbaru</h4>
         <div class="p-3 row">
             {{-- 2 card in 1 row --}}
             <div class="col-md-6">
-                @if ($berita->count() > 0)
+                @if ($artikel->count() > 0)
                     {{-- get latest berita --}}
                     @php
-                        $latest = $berita->sortByDesc('created_at')->first();
+                        $latest = $artikel->sortByDesc('created_at')->first();
                         $pertama = $latest;
                     @endphp
 
@@ -81,9 +66,9 @@
                                 <div class="carousel-inner">
                                     @foreach (json_decode($latest->gambar) as $item)
                                         <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-                                            <img src="{{ asset('img/berita/' . $item) }}" class="d-block w-100"
+                                            <img src="{{ asset('img/jurnal-arikel/' . $item) }}" class="d-block w-100"
                                                 style="height: 400px; object-fit: cover; object-position: center"
-                                                alt="{{ asset('img/berita/' . $item) }}">
+                                                alt="{{ asset('img/jurnal-arikel/' . $item) }}">
                                         </div>
                                     @endforeach
                                 </div>
@@ -99,26 +84,26 @@
                                 </button>
                             </div>
                         @else
-                            <img src="{{ asset('img/berita/' . json_decode($latest->gambar)) }}" class="card-img-top"
+                            <img src="{{ asset('img/jurnal-arikel/' . json_decode($latest->gambar)) }}" class="card-img-top"
                                 style="height: 400px; object-fit: cover; object-position: center"
-                                alt="{{ asset('img/berita/' . json_decode($latest->gambar)) }}">
+                                alt="{{ asset('img/jurnal-arikel/' . json_decode($latest->gambar)) }}">
                         @endif
                         <div class="card-body app-overlay-bg" style="position: absolute; bottom: 0; width: 100%;">
                             <h5 class="card-title mb-1">
                                 @if (Auth::check())
                                     @if (Auth::user()->role == 'admin')
-                                        <a href="{{ route('admin.berita.edit', $latest->slug) }}"
+                                        <a href="{{ route('admin.artikel.edit', $latest->slug) }}"
                                             class="text-decoration-none text-dark">
                                             {{ $latest->judul }}
                                         </a>
                                     @else
-                                        <a href="{{ route('user.berita.detail', $latest->slug) }}"
+                                        <a href="{{ route('user.jurnal-artikel.show', ['artikel', $latest->slug]) }}"
                                             class="text-decoration-none text-dark">
                                             {{ $latest->judul }}
                                         </a>
                                     @endif
                                 @else
-                                    <a href="{{ route('guest.berita.detail', $latest->slug) }}"
+                                    <a href="{{ route('guest.jurnal-artikel.show', ['artikel', $latest->slug]) }}"
                                         class="text-decoration-none text-dark">
                                         {{ $latest->judul }}
                                     </a>
@@ -133,11 +118,6 @@
                                     <small class="text-dark">
                                         {{ $latest->created_at->diffForHumans() }}
                                     </small>
-                                    <button type="button" class="app-color-primary like-button"
-                                        {{ Auth::check() ? '' : 'disabled' }}>
-                                        <i class="fas fa-heart like-icon" onload="checkers_like({{ $latest->id }})"></i>
-                                        <span class="like-number">{{ $latest->like }}</span>
-                                    </button>
                                     <button type="button" class="app-color-primary shere-button" data-bs-toggle="modal"
                                         url="{{ route('guest.berita.detail', $latest->slug) }}"
                                         data-bs-target="#exampleModal">
@@ -146,9 +126,7 @@
                                     </button>
                                     <br>
                                     <small class="text-muted">
-                                        Created by {{ $latest->user->name }} |
-                                        Reported by
-                                        {{ $latest->liputan->reporter->name }}
+                                        Created by {{ $latest->user->name }}
                                     </small>
                                 </form>
                             </div>
@@ -157,10 +135,10 @@
                 @endif
             </div>
             <div class="col-md-6">
-                @if ($berita->count() > 1)
+                @if ($artikel->count() > 1)
                     {{-- get latest berita --}}
                     @php
-                        $latest = $berita
+                        $latest = $artikel
                             ->sortByDesc('created_at')
                             ->skip(1)
                             ->first();
@@ -174,9 +152,9 @@
                                 <div class="carousel-inner">
                                     @foreach (json_decode($latest->gambar) as $item)
                                         <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-                                            <img src="{{ asset('img/berita/' . $item) }}" class="d-block w-100"
+                                            <img src="{{ asset('img/jurnal-arikel/' . $item) }}" class="d-block w-100"
                                                 style="height: 400px; object-fit: cover; object-position: center"
-                                                alt="{{ asset('img/berita/' . $item) }}">
+                                                alt="{{ asset('img/jurnal-arikel/' . $item) }}">
                                         </div>
                                     @endforeach
                                 </div>
@@ -192,26 +170,26 @@
                                 </button>
                             </div>
                         @else
-                            <img src="{{ asset('img/berita/' . json_decode($latest->gambar)) }}" class="card-img-top"
-                                style="height: 400px; object-fit: cover; object-position: center"
-                                alt="{{ asset('img/berita/' . json_decode($latest->gambar)) }}">
+                            <img src="{{ asset('img/jurnal-arikel/' . json_decode($latest->gambar)) }}"
+                                class="card-img-top" style="height: 400px; object-fit: cover; object-position: center"
+                                alt="{{ asset('img/jurnal-arikel/' . json_decode($latest->gambar)) }}">
                         @endif
                         <div class="card-body app-overlay-bg" style="position: absolute; bottom: 0; width: 100%;">
                             <h5 class="card-title mb-1">
                                 @if (Auth::check())
                                     @if (Auth::user()->role == 'admin')
-                                        <a href="{{ route('admin.berita.edit', $latest->slug) }}"
+                                        <a href="{{ route('admin.artikel.edit', $latest->slug) }}"
                                             class="text-decoration-none text-dark">
                                             {{ $latest->judul }}
                                         </a>
                                     @else
-                                        <a href="{{ route('user.berita.detail', $latest->slug) }}"
+                                        <a href="{{ route('user.jurnal-artikel.show', ['artikel', $latest->slug]) }}"
                                             class="text-decoration-none text-dark">
                                             {{ $latest->judul }}
                                         </a>
                                     @endif
                                 @else
-                                    <a href="{{ route('guest.berita.detail', $latest->slug) }}"
+                                    <a href="{{ route('guest.jurnal-artikel.show', ['artikel', $latest->slug]) }}"
                                         class="text-decoration-none text-dark">
                                         {{ $latest->judul }}
                                     </a>
@@ -226,12 +204,6 @@
                                     <small class="text-dark">
                                         {{ $latest->created_at->diffForHumans() }}
                                     </small>
-                                    <button type="button" class="app-color-primary like-button"
-                                        {{ Auth::check() ? '' : 'disabled' }}>
-                                        <i class="fas fa-heart like-icon"
-                                            onload="checkers_like({{ $latest->id }})"></i>
-                                        <span class="like-number">{{ $latest->like }}</span>
-                                    </button>
                                     <button type="button" class="app-color-primary shere-button" data-bs-toggle="modal"
                                         url="{{ route('guest.berita.detail', $latest->slug) }}"
                                         data-bs-target="#exampleModal2">
@@ -240,9 +212,7 @@
                                     </button>
                                     <br>
                                     <small class="text-muted">
-                                        Created by {{ $latest->user->name }} |
-                                        Reported by
-                                        {{ $latest->liputan->reporter->name }}
+                                        Created by {{ $latest->user->name }}
                                     </small>
                                 </form>
                             </div>
@@ -250,9 +220,9 @@
                     </div>
                 @endif
             </div>
-            @if ($berita->count() > 2)
+            @if ($artikel->count() > 2)
                 @php
-                    $data = $berita->sortByDesc('created_at')->skip(2);
+                    $data = $artikel->sortByDesc('created_at')->skip(2);
                 @endphp
                 @foreach ($data as $item)
                     <div class="col-md-3">
@@ -260,13 +230,13 @@
                         {{-- <h5>Berita Terkini</h5> --}}
                         <div class="card mb-3" style="position: relative">
                             @if (is_array(json_decode($item->gambar)))
-                                <img src="{{ asset('img/berita/' . json_decode($item->gambar)[0]) }}"
+                                <img src="{{ asset('img/jurnal-arikel/' . json_decode($item->gambar)[0]) }}"
                                     class="card-img-top" style="height: 200px; object-fit: cover; object-position: center"
-                                    alt="{{ asset('img/berita/' . json_decode($item->gambar)[0]) }}">
+                                    alt="{{ asset('img/jurnal-arikel/' . json_decode($item->gambar)[0]) }}">
                             @else
-                                <img src="{{ asset('img/berita/' . json_decode($item->gambar)) }}" class="card-img-top"
-                                    style="height: 200px; object-fit: cover; object-position: center"
-                                    alt="{{ asset('img/berita/' . json_decode($item->gambar)) }}">
+                                <img src="{{ asset('img/jurnal-arikel/' . json_decode($item->gambar)) }}"
+                                    class="card-img-top" style="height: 200px; object-fit: cover; object-position: center"
+                                    alt="{{ asset('img/jurnal-arikel/' . json_decode($item->gambar)) }}">
                             @endif
                             <div class="card-body app-overlay-bg" style="position: absolute; bottom: 0; width: 100%;">
                                 @php
@@ -285,7 +255,7 @@
                                                 {{ $judul }}
                                             </a>
                                         @else
-                                            <a href="{{ route('user.berita.detail', $item->slug) }}"
+                                            <a href="{{ route('user.jurnal-artikel.show', ['artikel', $item->slug]) }}"
                                                 class="text-decoration-none text-dark">
                                                 {{ $judul }}
                                             </a>
@@ -326,26 +296,15 @@
             @endif
         </div>
 
-        <h4>Berita Terpopuler</h4>
+        <h4>List Jurnal</h4>
 
         <div class="row mb-5">
-            @if ($berita->count() > 0)
+            @if ($jurnal->count() > 0)
                 <div class="col-md-7 mb-5">
                     @php
-                        // get data that have most like in this week
-                        $like = App\Models\Berita::whereBetween('created_at', [Carbon\Carbon::now()->startOfWeek(), Carbon\Carbon::now()->endOfWeek()])
-                            ->where('kecamatan_id', $kecamatan_now->id)
-                            ->get();
-
-                        // get the most like
-                        if ($like->count() > 0) {
-                            $like = $like->max('like');
-                        } else {
-                            $like = 0;
-                        }
 
                         // get the data with value of most like
-                        $mostPopular = App\Models\Berita::where('like', $like)->first();
+                        $mostPopular = App\Models\Jurnal::first();
                         // dd($mostPopular);
                     @endphp
                     @if (is_array(json_decode($mostPopular->gambar)))
@@ -354,9 +313,9 @@
                             <div class="carousel-inner">
                                 @foreach (json_decode($mostPopular->gambar) as $item)
                                     <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-                                        <img src="{{ asset('img/berita/' . $item) }}" class="d-block w-100"
+                                        <img src="{{ asset('img/jurnal-arikel/' . $item) }}" class="d-block w-100"
                                             style="height: 300px; object-fit: cover; object-position: center"
-                                            alt="{{ asset('img/berita/' . $item) }}">
+                                            alt="{{ asset('img/jurnal-arikel/' . $item) }}">
                                     </div>
                                 @endforeach
                             </div>
@@ -372,9 +331,9 @@
                             </button>
                         </div>
                     @else
-                        <img src="{{ asset('img/berita/' . json_decode($mostPopular->gambar)) }}"
+                        <img src="{{ asset('img/jurnal-arikel/' . json_decode($mostPopular->gambar)) }}"
                             class="card-img-top mb-3" style="height: 300px; object-fit: cover; object-position: center"
-                            alt="{{ asset('img/berita/' . json_decode($mostPopular->gambar)) }}">
+                            alt="{{ asset('img/jurnal-arikel/' . json_decode($mostPopular->gambar)) }}">
                     @endif
 
                     <h5>
@@ -386,14 +345,6 @@
                         <i class="fas fa-clock"></i>
                         {{ $mostPopular->created_at->diffForHumans() }}
                         <i class="me-3"></i>
-                        {{-- icon comment --}}
-                        <i class="fas fa-comment"></i>
-                        {{ count($mostPopular->komentar) }}
-                        <i class="me-3"></i>
-                        {{-- love icon --}}
-                        <i class="fas fa-heart"></i>
-                        {{ $mostPopular->like }}
-                        <i class="me-3"></i>
                         {{-- shere icon --}}
                         <button type="button" class="shere-button" data-bs-toggle="modal"
                             url="{{ route('guest.berita.detail', $mostPopular->slug) }}" data-bs-target="#exampleModal4">
@@ -403,9 +354,7 @@
                     </h6>
 
                     <small class="text-muted">
-                        Created by {{ $mostPopular->user->name }} |
-                        Reported by
-                        {{ $mostPopular->liputan->reporter->name }}
+                        Created by {{ $mostPopular->user->name }}
                     </small>
                     <p>
                         @php
@@ -421,7 +370,7 @@
                             <a href="{{ route('admin.berita.edit', $mostPopular->slug) }}"
                                 class="btn btn-outline-primary app-color-primary">Read More</a>
                         @else
-                            <a href="{{ route('user.berita.detail', $mostPopular->slug) }}"
+                            <a href="{{ route('user.jurnal-artikel.show', ['jurnal', $mostPopular->slug]) }}"
                                 class="btn btn-outline-primary app-color-primary">Read More</a>
                         @endif
                     @else
@@ -436,21 +385,21 @@
                 @php
                     // ambil data tanpa data yang paling populer
                     if (isset($mostPopular)) {
-                        $data = $berita->where('id', '!=', $mostPopular->id);
+                        $data = $jurnal->where('id', '!=', $mostPopular->id);
                     } else {
-                        $data = $berita;
+                        $data = $jurnal;
                     }
                 @endphp
                 @forelse ($data as $item)
                     <div class="row mb-2">
                         @if (is_array(json_decode($item->gambar)))
-                            <img src="{{ asset('img/berita/' . json_decode($item->gambar)[0]) }}" class="col-4"
+                            <img src="{{ asset('img/jurnal-arikel/' . json_decode($item->gambar)[0]) }}" class="col-4"
                                 style="object-fit: cover; object-position: center; height: 100px;"
-                                alt="{{ asset('img/berita/' . json_decode($item->gambar)[0]) }}">
+                                alt="{{ asset('img/jurnal-arikel/' . json_decode($item->gambar)[0]) }}">
                         @else
-                            <img src="{{ asset('img/berita/' . json_decode($item->gambar)) }}" class="col-4"
+                            <img src="{{ asset('img/jurnal-arikel/' . json_decode($item->gambar)) }}" class="col-4"
                                 style="object-fit: cover; object-position: center; height: 100px;"
-                                alt="{{ asset('img/berita/' . json_decode($item->gambar)) }}">
+                                alt="{{ asset('img/jurnal-arikel/' . json_decode($item->gambar)) }}">
                         @endif
                         <div class="col-8">
                             @php
@@ -469,7 +418,7 @@
                                             {{ $judul }}
                                         </a>
                                     @else
-                                        <a href="{{ route('user.berita.detail', $item->slug) }}"
+                                        <a href="{{ route('user.jurnal-artikel.show', ['jurnal', $item->slug]) }}"
                                             class="text-decoration-none text-dark">
                                             {{ $judul }}
                                         </a>
@@ -498,60 +447,269 @@
             </div>
         </div>
 
-        @foreach ($berita as $item)
-            <h1>Semua Berita</h1>
-            <div class="row mb-5">
-                @if (is_array(json_decode($item->gambar)))
-                    <img src="{{ asset('img/berita/' . json_decode($item->gambar)[0]) }}" class="col-4"
-                        style="object-fit: cover; object-position: center; height: 150px;"
-                        alt="{{ asset('img/berita/' . json_decode($item->gambar)[0]) }}">
-                @else
-                    <img src="{{ asset('img/berita/' . json_decode($item->gambar)) }}" class="col-4"
-                        style="object-fit: cover; object-position: center; height: 150px;"
-                        alt="{{ asset('img/berita/' . json_decode($item->gambar)) }}">
-                @endif
-                <div class="col-8">
-                    @php
-                        if (strlen($item->judul) > 70) {
-                            $judul = substr(strip_tags($item->judul), 0, 70);
-                            $judul .= '...';
-                        } else {
-                            $judul = strip_tags($item->judul);
-                        }
-                    @endphp
-                    <h6>
-                        @if (Auth::check())
-                            @if (Auth::user()->role == 'admin')
-                                <a href="{{ route('admin.berita.edit', $item->slug) }}"
-                                    class="text-decoration-none text-dark">
-                                    {{ $judul }}
-                                </a>
+        <h4>List Artikel</h4>
+        <div class="row flex-row-reverse">
+            @php
+                $latest = $artikel->sortByDesc('created_at')->first();
+
+                $daerah = $latest;
+            @endphp
+            @if ($latest)
+                <div class="col-md-7 mb-5">
+                    @if (is_array(json_decode($latest->gambar)))
+                        <div style="margin-bottom: 15px" id="carouselExampleControls3" class="carousel slide"
+                            data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                @foreach (json_decode($latest->gambar) as $item)
+                                    <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+                                        <img src="{{ asset('img/jurnal-arikel/' . $item) }}" class="d-block w-100"
+                                            style="height: 300px; object-fit: cover; object-position: center"
+                                            alt="{{ asset('img/jurnal-arikel/' . $item) }}">
+                                    </div>
+                                @endforeach
+                            </div>
+                            <button class="carousel-control-prev" type="button"
+                                data-bs-target="#carouselExampleControls3" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden"></span>
+                            </button>
+                            <button class="carousel-control-next" type="button"
+                                data-bs-target="#carouselExampleControls3" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden"></span>
+                            </button>
+                        </div>
+                    @else
+                        <img src="{{ asset('img/jurnal-arikel/' . json_decode($latest->gambar)) }}"
+                            class="card-img-top mb-3" style="height: 300px; object-fit: cover; object-position: center"
+                            alt="{{ asset('img/jurnal-arikel/' . json_decode($latest->gambar)) }}">
+                    @endif
+
+                    <h5>
+                        {{ $latest->judul }}
+                    </h5>
+                    {{-- Created at --}}
+                    <h6 class="text-muted mt-3">
+                        {{-- icon --}}
+                        <i class="fas fa-clock"></i>
+                        {{ $latest->created_at->diffForHumans() }}
+                        <i class="me-3"></i>
+                        {{-- shere icon --}}
+                        <button type="button" class="shere-button" data-bs-toggle="modal"
+                            url="{{ route('guest.berita.detail', $latest->slug) }}" data-bs-target="#exampleModal3">
+                            <i class="fas fa-share-alt shere-icon text-muted"></i>
+                            <span>Share</span>
+                    </h6>
+
+                    <small class="text-muted">
+                        Created by {{ $latest->user->name }}
+                    </small>
+                    <p>
+                        @php
+                            $isi = strip_tags($latest->isi);
+                            $isi = substr($isi, 0, 500);
+                        @endphp
+                        {{ $isi }}...
+                    </p>
+
+                    {{-- button read more --}}
+                    @if (Auth::check())
+                        @if (Auth::user()->role == 'admin')
+                            <a href="{{ route('admin.berita.edit', $latest->slug) }}"
+                                class="btn btn-outline-primary app-color-primary">Read More</a>
+                        @else
+                            <a href="{{ route('user.jurnal-artikel.show', ['artikel', $latest->slug]) }}"
+                                class="btn btn-outline-primary app-color-primary">Read More</a>
+                        @endif
+                    @else
+                        <a href="{{ route('guest.berita.detail', $latest->slug) }}"
+                            class="btn btn-outline-primary app-color-primary">Read More</a>
+                    @endif
+                </div>
+            @endif
+
+            {{-- list berita lainnya --}}
+            <div class="col-md-5 mb-5">
+                @php
+                    // ambil data tanpa data yang paling populer
+                    if ($latest != null) {
+                        $data = $artikel->where('id', '!=', $latest->id)->where('status', 'publish');
+                    } else {
+                        $data = [];
+                    }
+                    $data2 = [];
+                @endphp
+                @forelse ($data2 as $item)
+                    <div class="row mb-2">
+                        @if (is_array(json_decode($item->gambar)))
+                            <img src="{{ asset('img/jurnal-arikel/' . json_decode($item->gambar)[0]) }}" class="col-4"
+                                style="object-fit: cover; object-position: center; height: 100px;"
+                                alt="{{ asset('img/jurnal-arikel/' . json_decode($item->gambar)[0]) }}">
+                        @else
+                            <img src="{{ asset('img/jurnal-arikel/' . json_decode($item->gambar)) }}" class="col-4"
+                                style="object-fit: cover; object-position: center; height: 100px;"
+                                alt="{{ asset('img/jurnal-arikel/' . json_decode($item->gambar)) }}">
+                        @endif
+                        <div class="col-8">
+                            @php
+                                if (strlen($item->judul) > 70) {
+                                    $judul = substr(strip_tags($item->judul), 0, 70);
+                                    $judul .= '...';
+                                } else {
+                                    $judul = strip_tags($item->judul);
+                                }
+                            @endphp
+                            <h6>
+                                @if (Auth::check())
+                                    @if (Auth::user()->role == 'admin')
+                                        <a href="{{ route('admin.berita.edit', $item->slug) }}"
+                                            class="text-decoration-none text-dark">
+                                            {{ $judul }}
+                                        </a>
+                                    @else
+                                        <a href="{{ route('user.jurnal-artikel.show', ['artikel', $item->slug]) }}"
+                                            class="text-decoration-none text-dark">
+                                            {{ $judul }}
+                                        </a>
+                                    @endif
+                                @else
+                                    <a href="{{ route('guest.berita.detail', $item->slug) }}"
+                                        class="text-decoration-none text-dark">
+                                        {{ $judul }}
+                                    </a>
+                                @endif
+                            </h6>
+                            <hr>
+                            {{-- created at --}}
+                            <small>
+                                <i class="fas fa-clock"></i>
+                                {{ $item->created_at->diffForHumans() }}
+                            </small>
+                        </div>
+                    </div>
+                @empty
+                    <small>
+                        <i class="fas fa-exclamation-circle"></i>
+                        Belum ada berita
+                    </small>
+                @endforelse
+            </div>
+
+            <h1>Semua Artikel</h1>
+            @foreach ($artikel as $item)
+                <div class="row mb-2">
+                    @if (is_array(json_decode($item->gambar)))
+                        <img src="{{ asset('img/jurnal-arikel/' . json_decode($item->gambar)[0]) }}" class="col-4"
+                            style="object-fit: cover; object-position: center; height: 150px;"
+                            alt="{{ asset('img/jurnal-arikel/' . json_decode($item->gambar)[0]) }}">
+                    @else
+                        <img src="{{ asset('img/jurnal-arikel/' . json_decode($item->gambar)) }}" class="col-4"
+                            style="object-fit: cover; object-position: center; height: 150px;"
+                            alt="{{ asset('img/jurnal-arikel/' . json_decode($item->gambar)) }}">
+                    @endif
+                    <div class="col-8">
+                        @php
+                            if (strlen($item->judul) > 70) {
+                                $judul = substr(strip_tags($item->judul), 0, 70);
+                                $judul .= '...';
+                            } else {
+                                $judul = strip_tags($item->judul);
+                            }
+                        @endphp
+                        <h6>
+                            @if (Auth::check())
+                                @if (Auth::user()->role == 'admin')
+                                    <a href="{{ route('admin.berita.edit', $item->slug) }}"
+                                        class="text-decoration-none text-dark">
+                                        {{ $judul }}
+                                    </a>
+                                @else
+                                    <a href="{{ route('user.berita.detail', $item->slug) }}"
+                                        class="text-decoration-none text-dark">
+                                        {{ $judul }}
+                                    </a>
+                                @endif
                             @else
-                                <a href="{{ route('user.berita.detail', $item->slug) }}"
+                                <a href="{{ route('guest.berita.detail', $item->slug) }}"
                                     class="text-decoration-none text-dark">
                                     {{ $judul }}
                                 </a>
                             @endif
-                        @else
-                            <a href="{{ route('guest.berita.detail', $item->slug) }}"
-                                class="text-decoration-none text-dark">
-                                {{ $judul }}
-                            </a>
-                        @endif
-                    </h6>
-                    <hr>
-                    {{-- created at --}}
-                    <small>
-                        <i class="fas fa-clock"></i>
-                        {{ $item->created_at->diffForHumans() }}
-                    </small>
+                        </h6>
+                        <hr>
+                        {{-- created at --}}
+                        <small>
+                            <i class="fas fa-clock"></i>
+                            {{ $item->created_at->diffForHumans() }}
+                        </small>
+                    </div>
                 </div>
-            </div>
-        @endforeach
+            @endforeach
 
-        {{-- pagination --}}
-        <div class="d-flex justify-content-center">
-            {{ $berita->links() }}
+            {{-- pagination --}}
+            <div class="d-flex justify-content-center mb-5">
+                {{ $artikel->links() }}
+            </div>
+
+            <h1>Semua Jurnal</h1>
+            @foreach ($artikel as $item)
+                <div class="row mb-2">
+                    @if (is_array(json_decode($item->gambar)))
+                        <img src="{{ asset('img/jurnal-arikel/' . json_decode($item->gambar)[0]) }}" class="col-4"
+                            style="object-fit: cover; object-position: center; height: 150px;"
+                            alt="{{ asset('img/jurnal-arikel/' . json_decode($item->gambar)[0]) }}">
+                    @else
+                        <img src="{{ asset('img/jurnal-arikel/' . json_decode($item->gambar)) }}" class="col-4"
+                            style="object-fit: cover; object-position: center; height: 150px;"
+                            alt="{{ asset('img/jurnal-arikel/' . json_decode($item->gambar)) }}">
+                    @endif
+                    <div class="col-8">
+                        @php
+                            if (strlen($item->judul) > 70) {
+                                $judul = substr(strip_tags($item->judul), 0, 70);
+                                $judul .= '...';
+                            } else {
+                                $judul = strip_tags($item->judul);
+                            }
+                        @endphp
+                        <h6>
+                            @if (Auth::check())
+                                @if (Auth::user()->role == 'admin')
+                                    <a href="{{ route('admin.berita.edit', $item->slug) }}"
+                                        class="text-decoration-none text-dark">
+                                        {{ $judul }}
+                                    </a>
+                                @else
+                                    <a href="{{ route('user.berita.detail', $item->slug) }}"
+                                        class="text-decoration-none text-dark">
+                                        {{ $judul }}
+                                    </a>
+                                @endif
+                            @else
+                                <a href="{{ route('guest.berita.detail', $item->slug) }}"
+                                    class="text-decoration-none text-dark">
+                                    {{ $judul }}
+                                </a>
+                            @endif
+                        </h6>
+                        <hr>
+                        {{-- created at --}}
+                        <small>
+                            <i class="fas fa-clock"></i>
+                            {{ $item->created_at->diffForHumans() }}
+                        </small>
+                    </div>
+                </div>
+            @endforeach
+
+            {{-- pagination --}}
+            <div class="d-flex justify-content-center mb-5">
+                {{ $artikel->links() }}
+            </div>
+
+            <div class="social-btn-sp text-center">
+                {!! $shareButtons !!}
+            </div>
         </div>
     @else
         <div class="row justify-content-center align-items-center" style="height: 80vh;">
@@ -560,15 +718,10 @@
                 <img src="{{ asset('img/no-data.jpeg') }}" alt="..."
                     style="width: 200px; height: 200px; object-fit: cover">
                 {{-- text --}}
-                <h4 class="text-center">Belum ada berita</h4>
+                <h4 class="text-center">Belum ada artikel dan jurnal</h4>
             </div>
         </div>
     @endif
-
-    {{-- pagination
-    <div class="d-flex justify-content-center">
-        {{ $berita->links() }}
-    </div> --}}
 @endsection
 
 @section('sponsor')

@@ -160,7 +160,7 @@
                                         {{ $latest->created_at->diffForHumans() }}
                                     </small>
                                     <button type="button" class="app-color-primary like-button"
-                                        {{ Auth::check() ? '' : 'disabled' }}>
+                                        {{ Auth::check() ? '' : 'dis' }}>
                                         <i class="fas fa-heart like-icon" onload="checkers_like({{ $latest->id }})"></i>
                                         <span class="like-number">{{ $latest->like }}</span>
                                     </button>
@@ -255,7 +255,7 @@
                                         {{ $latest->created_at->diffForHumans() }}
                                     </small>
                                     <button type="button" class="app-color-primary like-button"
-                                        {{ Auth::check() ? '' : 'disabled' }}>
+                                        {{ Auth::check() ? '' : 'dis' }}>
                                         <i class="fas fa-heart like-icon"
                                             onload="checkers_like({{ $latest->id }})"></i>
                                         <span class="like-number">{{ $latest->like }}</span>
@@ -335,7 +335,7 @@
                                         {{ $item->created_at->diffForHumans() }}
                                     </small>
                                     <button type="button" class="app-color-primary like-button"
-                                        {{ Auth::check() ? '' : 'disabled' }}>
+                                        {{ Auth::check() ? '' : 'dis' }}>
                                         <i class="fas fa-heart like-icon"
                                             onload="checkers_like({{ $item->id }})"></i>
                                         <span class="like-number">{{ $item->like }}</span>
@@ -700,7 +700,63 @@
                 @endforelse
             </div>
 
-            <div class="social-btn-sp text-center">
+            <h1>Semua berita</h1>
+            @foreach ($berita as $item)
+                <div class="row mb-2">
+                    @if (is_array(json_decode($item->gambar)))
+                        <img src="{{ asset('img/berita/' . json_decode($item->gambar)[0]) }}" class="col-4"
+                            style="object-fit: cover; object-position: center; height: 150px;"
+                            alt="{{ asset('img/berita/' . json_decode($item->gambar)[0]) }}">
+                    @else
+                        <img src="{{ asset('img/berita/' . json_decode($item->gambar)) }}" class="col-4"
+                            style="object-fit: cover; object-position: center; height: 150px;"
+                            alt="{{ asset('img/berita/' . json_decode($item->gambar)) }}">
+                    @endif
+                    <div class="col-8">
+                        @php
+                            if (strlen($item->judul) > 70) {
+                                $judul = substr(strip_tags($item->judul), 0, 70);
+                                $judul .= '...';
+                            } else {
+                                $judul = strip_tags($item->judul);
+                            }
+                        @endphp
+                        <h6>
+                            @if (Auth::check())
+                                @if (Auth::user()->role == 'admin')
+                                    <a href="{{ route('admin.berita.edit', $item->slug) }}"
+                                        class="text-decoration-none text-dark">
+                                        {{ $judul }}
+                                    </a>
+                                @else
+                                    <a href="{{ route('user.berita.detail', $item->slug) }}"
+                                        class="text-decoration-none text-dark">
+                                        {{ $judul }}
+                                    </a>
+                                @endif
+                            @else
+                                <a href="{{ route('guest.berita.detail', $item->slug) }}"
+                                    class="text-decoration-none text-dark">
+                                    {{ $judul }}
+                                </a>
+                            @endif
+                        </h6>
+                        <hr>
+                        {{-- created at --}}
+                        <small>
+                            <i class="fas fa-clock"></i>
+                            {{ $item->created_at->diffForHumans() }}
+                        </small>
+                    </div>
+                </div>
+            @endforeach
+
+            {{-- pagination --}}
+            <div class="d-flex justify-content-center">
+                {{ $berita->links() }}
+            </div>
+
+            <div class="social-btn-sp text-center my-3">
                 {!! $shareButtons !!}
             </div>
         </div>
@@ -798,7 +854,7 @@
         }
 
         async function checkers_like(id) {
-            if ($('.like-button').attr('disabled')) {
+            if ($('.like-button').attr('dis')) {
                 console.log('disabled');
                 $('.like-button').click(function() {
                     confirm('Login terlebih dahulu');
@@ -834,7 +890,7 @@
 
         $(document).ready(async function() {
             // if like-button is disabled
-            if ($('.like-button').attr('disabled')) {
+            if ($('.like-button').attr('dis')) {
                 console.log('disabled');
                 $('.like-button').click(function() {
                     confirm('Login terlebih dahulu');

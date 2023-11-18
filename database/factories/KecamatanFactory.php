@@ -18,86 +18,12 @@ class KecamatanFactory extends Factory
      */
     public function definition(): array
     {
-        $json = [
-            [
-                "id" => "5101",
-                "province_id" => "51",
-                "name" => "KAB JEMBRANA"
-            ],
-            [
-                "id" => "5102",
-                "province_id" => "51",
-                "name" => "KAB TABANAN"
-
-            ],
-            [
-                "id" => "5103",
-                "province_id" => "51",
-                "name" => "KAB BADUNG"
-
-            ],
-            [
-                "id" => "5104",
-                "province_id" => "51",
-                "name" => "KAB GIANYAR"
-
-            ],
-            [
-                "id" => "5105",
-                "province_id" => "51",
-                "name" => "KAB KLUNGKUNG"
-
-            ],
-            [
-                "id" => "5106",
-                "province_id" => "51",
-                "name" => "KAB BANGLI"
-
-            ],
-            [
-                "id" => "5107",
-                "province_id" => "51",
-                "name" => "KAB KARANG ASEM"
-
-            ],
-            [
-                "id" => "5108",
-                "province_id" => "51",
-                "name" => "KAB BULELENG"
-
-            ],
-            [
-                "id" => "5171",
-                "province_id" => "51",
-                "name" => "KOTA DENPASAR"
-            ]
-        ];
-
-        $data = [];
-
-        foreach ($json as $key => $value) {
-            // take data from https://www.emsifa.com/api-wilayah-indonesia/api/districts/{id}.json
-
-            $isi = request()->get('https://www.emsifa.com/api-wilayah-indonesia/api/districts/' . $value['id'] . '.json');
-
-            // dd($isi);
-
-            $data[] = [
-                "id" => $isi['id'],
-                "regency_id" => $isi['regency_id'],
-                "name" => $isi['name'],
-            ];
-        }
-
-        $data = $data[self::$order];
-        $id = self::$order;
-        self::$order++;
-
         return [
             //
-            'kabupaten_id' => $id,
-            'nama' => $data['name'],
+            'kabupaten_id' => $this->faker->numberBetween(1, 9),
+            'nama_kecamatan' => $data['name'] = $this->faker->unique()->city,
             'slug' => Str::slug($data['name']),
+            'gambar' => 'no-data.jpeg',
         ];
     }
 }

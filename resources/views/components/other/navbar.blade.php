@@ -41,7 +41,8 @@
                             @forelse ($item->kecamatan as $kecamatan)
                                 <li class="nav-item">
                                     <a class="nav-link text-dark"
-                                        href="{{ route('guest.berita.kecamatan', $kecamatan->slug) }}">
+                                        href="{{ Auth::check() ? route('user.berita.kecamatan', $kecamatan->slug) : route('guest.berita.kecamatan', $kecamatan->slug) }}">
+                                        {{-- {{ $kecamatan->nama_kecamatan }} --}}
                                         {{ $kecamatan->nama_kecamatan }}
                                     </a>
                                 </li>

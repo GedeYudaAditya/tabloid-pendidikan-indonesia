@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Liputan>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Jurnal>
  */
-class LiputanFactory extends Factory
+class JurnalFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,13 +18,12 @@ class LiputanFactory extends Factory
     {
         return [
             //
-            'kecamatan_id' => $this->faker->numberBetween(1, 100),
             'judul' => $this->faker->sentence(6),
             'isi' => $this->faker->paragraph(3),
             'gambar' => '"no-data.jpeg"',
-            'status' => $this->faker->randomElement(['mengantri', 'dibuat']),
             'slug' => $this->faker->slug(),
-            'reporter_id' => $this->faker->numberBetween(1, 10),
+            'user_id' => $this->faker->numberBetween(1, 10),
+            'status' => $this->faker->randomElement(['publish', 'draft']),
         ];
     }
 }
