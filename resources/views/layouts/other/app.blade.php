@@ -61,18 +61,33 @@
 
                             {{-- artikel --}}
                             <li class="nav-item mx-2">
-                                <a class="nav-link text-white" href="{{ route('user.jurnal-artikel.index') }}">Jurnal &
-                                    Artikel</a>
+                                @if (Auth::check())
+                                    <a class="nav-link text-white"
+                                        href="{{ route('user.jurnal-artikel.index') }}">Jurnal &
+                                        Artikel</a>
+                                @else
+                                    <a class="nav-link text-white"
+                                        href="{{ route('guest.jurnal-artikel.index') }}">Jurnal &
+                                        Artikel</a>
+                                @endif
                             </li>
 
                             {{-- buku --}}
                             <li class="nav-item mx-2">
-                                <a class="nav-link text-white" href="{{ route('user.buku.index') }}">Buku</a>
+                                @if (Auth::check())
+                                    <a class="nav-link text-white" href="{{ route('user.buku.index') }}">Buku</a>
+                                @else
+                                    <a class="nav-link text-white" href="{{ route('guest.buku.index') }}">Buku</a>
+                                @endif
                             </li>
 
                             {{-- event --}}
                             <li class="nav-item mx-2">
-                                <a class="nav-link text-white" href="{{ route('user.event.index') }}">Event</a>
+                                @if (Auth::check())
+                                    <a class="nav-link text-white" href="{{ route('user.event.index') }}">Event</a>
+                                @else
+                                    <a class="nav-link text-white" href="{{ route('guest.event.index') }}">Event</a>
+                                @endif
                             </li>
 
                             {{-- about --}}
@@ -92,12 +107,21 @@
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown"
                                         role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        {{ Auth::user()->name }}
+                                        @if (Auth::user()->avatar != null)
+                                            <img src="{{ asset('img/avatar/' . Auth::user()->avatar) }}" alt=""
+                                                style="width: 30px; height: 30px; object-fit: cover; object-position: center; border-radius: 50%; border: 1px solid white">
+                                            {{ Auth::user()->name }}
+                                        @else
+                                            <img src="https://ui-avatars.com/api/?name={{ Auth::user()->name }}&background=random&color=fff"
+                                                alt=""
+                                                style="width: 30px; height: 30px; object-fit: cover; object-position: center; border-radius: 50%; border: 1px solid white">
+                                            {{ Auth::user()->name }}
+                                        @endif
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a class="dropdown-item" href="{{ route('profile') }}">Profile</a>
                                         <li><a class="dropdown-item" href="{{ route('logout') }}"
-                                                onclick="event.preventDefault();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     document.getElementById('logout-form').submit();">
+                                                onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                                                 {{ __('Logout') }}</a></li>
                                         <form id="logout-form" action="{{ route('logout') }}" method="GET"
                                             class="d-none">

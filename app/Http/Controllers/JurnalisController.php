@@ -57,7 +57,7 @@ class JurnalisController extends Controller
             'gambar' => 'required',
             'gambar.*' => 'mimes:jpg,jpeg,png|max:2048',
             'isi' => 'required',
-            'attachment' => 'nullable|mimes:pdf|max:2048',
+            'attachment' => 'required|mimes:pdf|max:20480',
         ]);
 
         try {
@@ -117,7 +117,7 @@ class JurnalisController extends Controller
             'gambar' => 'nullable',
             'gambar.*' => 'mimes:jpg,jpeg,png|max:2048',
             'isi' => 'required',
-            'attachment' => 'nullable|mimes:pdf|max:2048',
+            'attachment' => 'required|mimes:pdf|max:20480',
         ]);
 
         $data = [];

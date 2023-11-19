@@ -61,6 +61,66 @@
 @endsection
 
 @section('content')
+    {{-- search from tahun or volume --}}
+    <form action="">
+        <div class="row mb-3">
+            {{-- option tahun --}}
+            <div class="col-md-6">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="tahun">Tahun</label>
+                    <select class="form-select" id="tahun" name="tahun">
+                        <option value="">Pilih tahun</option>
+                        @foreach ($tahun as $item)
+                            <option value="{{ $item }}" {{ request()->tahun == $item ? 'selected' : '' }}>
+                                {{ $item }}
+                            </option>
+                        @endforeach
+                    </select>
+                    {{-- <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Cari</button> --}}
+                </div>
+            </div>
+
+            {{-- option volume --}}
+            <div class="col-md-6">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="volume">Volume</label>
+                    <select class="form-select" id="volume" name="volume">
+                        <option value="">Pilih volume</option>
+                        @foreach ($volume as $key => $item)
+                            <option value="{{ $key }}" {{ request()->volume == $key ? 'selected' : '' }}>
+                                {{ $item }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Cari</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {{-- check if there is request from this page --}}
+    @if (request()->tahun || request()->volume)
+        {{-- search the berita with that key --}}
+        @php
+            if (request()->tahun && !request()->volume) {
+                $berita = App\Models\Berita::where('kecamatan_id', $kecamatan_now->id)
+                    ->where('status', 'publish')
+                    ->where('created_at', 'like', '%' . request()->tahun . '%')
+                    ->paginate(6);
+            } elseif (request()->volume && !request()->tahun) {
+                $berita = App\Models\Berita::where('kecamatan_id', $kecamatan_now->id)
+                    ->where('status', 'publish')
+                    ->where('volume', request()->volume)
+                    ->paginate(6);
+            } else {
+                $berita = App\Models\Berita::where('kecamatan_id', $kecamatan_now->id)
+                    ->where('status', 'publish')
+                    ->where('created_at', 'like', '%' . request()->tahun . '%')
+                    ->where('volume', request()->volume)
+                    ->paginate(6);
+            }
+        @endphp
+    @endif
     @if ($berita->count() > 0)
         {{-- sekapur sirih --}}
         <h4>Berita Terbaru</h4>

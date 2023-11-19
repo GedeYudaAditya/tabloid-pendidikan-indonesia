@@ -4,7 +4,7 @@
     {{-- select2 --}}
     <style>
         /* Difference Highlighting and Strike-through
-                                                                                    ------------------------------------------------ */
+                                                                                        ------------------------------------------------ */
         ins {
             color: #01a817;
             font-weight: bold;
@@ -20,7 +20,7 @@
         }
 
         /* Image Diffing
-                                                                                    ------------------------------------------------ */
+                                                                                        ------------------------------------------------ */
         del.diffimg.diffsrc {
             display: inline-block;
             position: relative;
@@ -45,7 +45,7 @@
         }
 
         /* List Diffing
-                                                                                    ------------------------------------------------ */
+                                                                                        ------------------------------------------------ */
         /* List Styles */
         .diff-list {
             list-style: none;
@@ -171,14 +171,7 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">Manajemen Berita | Detail Berita</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
-            <div class="btn-group me-2">
-                <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-                <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-            </div>
-            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                <span data-feather="calendar"></span>
-                This week
-            </button>
+
         </div>
     </div>
 

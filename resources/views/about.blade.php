@@ -22,6 +22,28 @@
 
 @section('content')
     <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                {{-- logo image --}}
+                <img src="{{ asset('img/logo_front.jpg') }}" class="img-fluid w-100" alt="logo">
+            </div>
+            <div class="col-md-8 d-flex justify-content-center align-items-center">
+                <div>
+                    {{-- title --}}
+                    <h1>Yayasan Medkom Indonesia Jaya</h1>
+                    <h2>TPI</h2>
+                    <h6>Nomor HAU</h6>
+                    <hr>
+                    {{-- description --}}
+                    <p class="text-justify">
+                        Tabloid Pendi.Indo adalah media informasi yang bergerak di bidang pendidikan. Tabloid Pendi.Indo
+                        merupakan media informasi yang berbasis online dan offline. Tabloid Pendi.Indo berdiri pada tanggal
+                        1
+                        Januari 2021. Tabloid Pendi.Indo berada di bawah naungan PT. Pendidikan Indonesia.
+                    </p>
+                </div>
+            </div>
+        </div>
         <h2>Struktur Organisasi</h2>
         <hr>
         <div class="row" style="flex-wrap: nowrap; overflow: auto">

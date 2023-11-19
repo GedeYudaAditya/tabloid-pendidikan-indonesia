@@ -47,16 +47,32 @@ class Controller extends BaseController
         // ->reddit()
         // ->pinterest();
 
+        $berita = Berita::where('status', 'publish')->orderBy('created_at', 'desc')->paginate(6);
+
+        $tahun = [];
+        foreach ($berita as $key => $value) {
+            $tahun[] = date('Y', strtotime($value->created_at));
+        }
+
+        $tahun = array_unique($tahun);
+
+        $volume = [
+            'V1' => 'Volume 1',
+            'V2' => 'Volume 2',
+        ];
+
         $data = [
             'title' => 'Landing Page',
             'kabupaten' => Kabupaten::all(),
-            'berita' => Berita::where('status', 'publish')->orderBy('created_at', 'desc')->paginate(6),
+            'berita' => $berita,
             'hari_peringatan' => HariPeringatan::get()->first(),
             'sekaps' => SekapurSirih::get()->first(),
             'kecamatanPopulerId' => $kecamatanPopulerId ? $kecamatanPopulerId->kecamatan->id : null,
             'kecamatanPopularName' => $kecamatanPopulerId ? $kecamatanPopulerId->kecamatan->nama_kecamatan : null,
             'sponsors' => Sponsor::all(),
             'shareButtons' => $shareButtons,
+            'tahun' => $tahun,
+            'volume' => $volume,
         ];
 
 
@@ -148,12 +164,29 @@ class Controller extends BaseController
 
     public function beritaKecamatan($slug)
     {
+        $berita = Berita::where('kecamatan_id', Kecamatan::where('slug', $slug)->firstOrFail()->id)->paginate(6);
+
+        // ambil rentang tahun berita yang ada
+        $tahun = [];
+        foreach ($berita as $key => $value) {
+            $tahun[] = date('Y', strtotime($value->created_at));
+        }
+
+        $tahun = array_unique($tahun);
+
+        $volume = [
+            'V1' => 'Volume 1',
+            'V2' => 'Volume 2',
+        ];
+
         $data = [
             'title' => 'Berita Kecamatan',
             'kabupaten' => Kabupaten::all(),
-            'berita' => Berita::where('kecamatan_id', Kecamatan::where('slug', $slug)->firstOrFail()->id)->paginate(6),
+            'berita' => $berita,
             'kecamatan_now' => Kecamatan::where('slug', $slug)->firstOrFail(),
             'sponsors' => Sponsor::all(),
+            'tahun' => $tahun,
+            'volume' => $volume,
         ];
         return view('berita-kecamatan', $data);
     }
@@ -488,5 +521,75 @@ class Controller extends BaseController
             'berita' => Berita::first(),
         ];
         return view('event-detail', $data);
+    }
+
+    // porfile
+    public function profile()
+    {
+        $data = [
+            'title' => 'Profile',
+            'kabupaten' => Kabupaten::all(),
+        ];
+        return view('profile', $data);
+    }
+
+    public function profileOperator()
+    {
+        $data = [
+            'title' => 'Profile',
+        ];
+        return view('components.other.akun', $data);
+    }
+
+    public function profileUpdate(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email,' . auth()->user()->id,
+            'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // max 2MB
+            'password' => 'nullable|string|confirmed',
+        ]);
+
+        try {
+            $user = User::findOrFail(auth()->user()->id);
+            DB::beginTransaction();
+
+            if ($request->avatar) {
+                // delete old avatar
+                if ($user->avatar) {
+                    if (file_exists(public_path('img/avatar/' . $user->avatar))) {
+                        unlink(public_path('img/avatar/' . $user->avatar));
+                    }
+                }
+
+                $avatarName = time() . '.' . $request->avatar->extension();
+                $request->avatar->move(public_path('img/avatar'), $avatarName);
+                $user->avatar = $avatarName;
+                $user->save();
+            }
+
+            // check if password not null
+            if ($request->password) {
+                $password = bcrypt($request->password);
+            } else {
+                $password = $user->password;
+            }
+
+            $user->update(
+                [
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'avatar' => $user->avatar ? $user->avatar : null,
+                    'password' => $password,
+                ]
+            );
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Berhasil update profile.');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            dd($th->getMessage());
+            return redirect()->back()->with('error', 'Gagal update profile. ' . $th->getMessage());
+        }
     }
 }

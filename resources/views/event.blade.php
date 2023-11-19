@@ -71,7 +71,17 @@
                                 }
                             @endphp
                             <h6 class="card-title mb-1">
-                                {{ $judul }}
+                                @if (Auth::check())
+                                    <a href="{{ route('user.event.show', $item->slug) }}"
+                                        class="text-decoration-none text-dark">
+                                        {{ $judul }}
+                                    </a>
+                                @else
+                                    <a href="{{ route('guest.event.show', $item->slug) }}"
+                                        class="text-decoration-none text-dark">
+                                        {{ $judul }}
+                                    </a>
+                                @endif
                             </h6>
                             {{-- like button --}}
                             <div class="d-flex justify-content-between" id="like-{{ $item->id }}-yes">
@@ -80,7 +90,7 @@
                                 {{-- time created --}}
                                 <small class="text-dark">
                                     {{ $item->created_at->diffForHumans() }} | Penulis
-                                    {{ $item->penulis }}
+                                    {{ $item->jenis }}
                                 </small>
                                 {{-- </div> --}}
                             </div>

@@ -22,11 +22,11 @@
             /* fallback for old browsers */
             background: #4facfe;
             /* Chrome 10-25,
-                                                                                                                                                                                                Safari 5.1-6 */
+                                                                                                                                                                                                                Safari 5.1-6 */
             background: -webkit-linear-gradient(to bottom right, rgba(79, 172, 254,
                         1), rgba(0, 242, 254, 1));
             /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+,
-                                                                                                                                                                                                Safari 7+ */
+                                                                                                                                                                                                                Safari 7+ */
             background: linear-gradient(to bottom right, rgba(79, 172, 254, 1), rgba(0,
                         242, 254, 1))
         }
@@ -138,12 +138,7 @@
                     <p class="mt-3">
                         <span class="text-muted">Dibuat Oleh :</span> {{ $event->user->name }}
                         <i class="me-3"></i>
-                        {{-- shere icon --}}
-                        <button type="button" class="shere-button" data-bs-toggle="modal"
-                            url="{{ route('guest.berita.detail', $event->slug) }}" data-bs-target="#exampleModal">
-                            <i class="fas fa-share-alt shere-icon text-muted"></i>
-                            <span>Share</span>
-                        </button>
+                        <span class="text-muted">Jenis Event :</span> {{ $event->jenis }}
                     </p>
 
                     <hr>
