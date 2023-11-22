@@ -22,7 +22,7 @@
 
     <div class="container">
         <h4>
-            Pengaturan Sekapur Sirih
+            Pengaturan Hari Peringatan
         </h4>
 
         @if ($hari_peringatan != null)
