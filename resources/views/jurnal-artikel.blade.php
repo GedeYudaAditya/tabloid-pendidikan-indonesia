@@ -356,7 +356,10 @@
         <h1>Semua Jurnal</h1>
         @foreach ($artikel as $item)
             <div class="row mb-2">
-                @if (is_array(json_decode($item->gambar)))
+                <div class="col-2 bg-secondary">
+
+                </div>
+                {{-- @if (is_array(json_decode($item->gambar)))
                     <img src="{{ asset('img/jurnal-arikel/' . json_decode($item->gambar)[0]) }}" class="col-4"
                         style="object-fit: cover; object-position: center; height: 150px;"
                         alt="{{ asset('img/jurnal-arikel/' . json_decode($item->gambar)[0]) }}">
@@ -364,8 +367,8 @@
                     <img src="{{ asset('img/jurnal-arikel/' . json_decode($item->gambar)) }}" class="col-4"
                         style="object-fit: cover; object-position: center; height: 150px;"
                         alt="{{ asset('img/jurnal-arikel/' . json_decode($item->gambar)) }}">
-                @endif
-                <div class="col-8">
+                @endif --}}
+                <div class="col-10">
                     @php
                         if (strlen($item->judul) > 70) {
                             $judul = substr(strip_tags($item->judul), 0, 70);

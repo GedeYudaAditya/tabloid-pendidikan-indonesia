@@ -54,7 +54,7 @@ class JurnalisController extends Controller
 
         $request->validate([
             'judul' => 'required',
-            'gambar' => 'required',
+            'gambar' => 'nullable',
             'gambar.*' => 'mimes:jpg,jpeg,png|max:2048',
             'isi' => 'required',
             'attachment' => 'required|mimes:pdf|max:20480',

@@ -32,21 +32,21 @@
                 </div>
             </div>
 
-            {{-- Thumbnail berita --}}
+            {{-- Thumbnail berita
             <div class="mb-3">
                 <label for="thumbnail" class="form-label">File Foto Jurnal</label>
                 <input class="form-control" multiple name="gambar[]" type="file" id="thumbnail" accept=".jpg,.png,.jpeg"
                     onchange="previewImage()">
-            </div>
+            </div> --}}
 
             {{-- preview image --}}
-            <div class="mb-3">
+            {{-- <div class="mb-3">
                 <label for="preview" id="images" class="form-label">Preview</label>
                 <img src="" alt="" id="preview" class="img-fluid">
                 <div class="multiple row row-cols-1 row-cols-md-3 g-4" style="flex-wrap: nowrap; overflow: auto">
 
                 </div>
-            </div>
+            </div> --}}
 
             {{-- isi --}}
             <div class="mb-3">
