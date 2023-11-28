@@ -24,7 +24,7 @@
         </h3>
 
         {{-- gambar --}}
-        <div class="row row-cols-1 row-cols-md-3 g-4">
+        {{-- <div class="row row-cols-1 row-cols-md-3 g-4">
             @php
                 // array string "[\"1.jpg\",\"2.jpg\"]" diubah menjadi array
                 $gambars = json_decode($jurnal->gambar);
@@ -36,7 +36,15 @@
                     </div>
                 </div>
             @endforeach
-        </div>
+        </div> --}}
+
+        {{-- attachment --}}
+        @if ($jurnal->attachment != null)
+            <div class="mt-3">
+                <a href="{{ asset('/attachment/' . $jurnal->attachment) }}" class="btn btn-primary">Download
+                    Attachment</a>
+            </div>
+        @endif
 
         {{-- isi --}}
         <div class="mt-3">

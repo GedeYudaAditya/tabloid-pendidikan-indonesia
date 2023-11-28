@@ -29,13 +29,15 @@
                 // array string "[\"1.jpg\",\"2.jpg\"]" diubah menjadi array
                 $gambars = json_decode($artikel->gambar);
             @endphp
-            @foreach ($gambars as $item)
-                <div class="col">
-                    <div class="card">
-                        <img src="{{ asset('/img/liputan/' . $item) }}" class="card-img-top" alt="...">
+            @if (is_array($gambars))
+                @foreach ($gambars as $item)
+                    <div class="col">
+                        <div class="card">
+                            <img src="{{ asset('/img/liputan/' . $item) }}" class="card-img-top" alt="...">
+                        </div>
                     </div>
-                </div>
-            @endforeach
+                @endforeach
+            @else
         </div>
 
         {{-- isi --}}
