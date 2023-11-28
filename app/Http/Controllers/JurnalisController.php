@@ -63,6 +63,8 @@ class JurnalisController extends Controller
         try {
             DB::beginTransaction();
 
+            $data = [];
+
             if ($request->hasFile('gambar')) {
                 $foto = $request->file('gambar');
 
@@ -81,10 +83,16 @@ class JurnalisController extends Controller
                 $attachment->move(public_path('attachment'), $attachmentName);
             }
 
+            if ($data) {
+                $data = json_encode($data);
+            } else {
+                $data = null;
+            }
+
             Jurnal::create([
                 'judul' => $request->judul,
                 'slug' => Str::slug($request->judul),
-                'gambar' => json_encode($data),
+                'gambar' => $data,
                 'isi' => $request->isi,
                 'attachment' => $attachmentName ?? null,
                 'user_id' => auth()->user()->id,
@@ -93,6 +101,7 @@ class JurnalisController extends Controller
             DB::commit();
             return redirect()->route('jurnalis.jurnal.index')->with('success', 'Jurnal berhasil ditambahkan');
         } catch (\Exception $e) {
+            dd($e->getMessage());
             DB::rollBack();
             return redirect()->route('jurnalis.jurnal.index')->with('error', 'Jurnal gagal ditambahkan');
         }

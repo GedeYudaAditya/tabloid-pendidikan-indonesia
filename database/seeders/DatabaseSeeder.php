@@ -64,14 +64,14 @@ class DatabaseSeeder extends Seeder
 
         User::factory(100)->create();
 
-        Liputan::factory(100)->create();
-        Berita::factory(100)->create();
+        // Liputan::factory(100)->create();
+        // Berita::factory(100)->create();
 
-        Buku::factory(100)->create();
-        Event::factory(100)->create();
+        // Buku::factory(100)->create();
+        // Event::factory(100)->create();
 
-        Jurnal::factory(100)->create();
-        Artikle::factory(100)->create();
+        // Jurnal::factory(100)->create();
+        // Artikle::factory(100)->create();
 
         SistemInformasi::factory(10)->create();
         Program::factory(10)->create();
