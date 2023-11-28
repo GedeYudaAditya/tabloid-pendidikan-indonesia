@@ -354,7 +354,7 @@
         </div>
 
         <h1>Semua Jurnal</h1>
-        @foreach ($artikel as $item)
+        @foreach ($jurnal as $item)
             <div class="row mb-2">
                 <div class="col-2 bg-secondary">
 
