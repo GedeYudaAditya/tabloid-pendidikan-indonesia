@@ -24,7 +24,7 @@
 <!-- Sidebar-->
 <div class="border-end app-bg-secondary" id="sidebar-wrapper" style="height: 100vh">
     <div class="sidebar-heading border-bottom app-bg-secondary text-white" style="font-weight: bolder">
-        Tabloid Pendi.Indo
+        TPI
     </div>
     <div class="list-group sidebar list-group-flush app-bg-secondary">
         <div style="height: 80vh; overflow-y: auto">
