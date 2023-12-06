@@ -49,7 +49,7 @@
                     <a class="navbar-brand text-white ms-3" href="{{ route('landing') }}">
                         <img src="{{ asset('img/logo.png') }}" alt="" height="30"
                             class="d-inline-block align-text-top">
-                        Tabloid Pendi.Indo
+                        <small style="font-size: smaller">Tabloid Pendidikan Indonesia</small>
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -63,36 +63,40 @@
                             <li class="nav-item mx-2">
                                 @if (Auth::check())
                                     <a class="nav-link text-white"
-                                        href="{{ route('user.jurnal-artikel.index') }}">Jurnal &
-                                        Artikel</a>
+                                        href="{{ route('user.jurnal-artikel.index') }}"><small>Jurnal &
+                                            Artikel</small></a>
                                 @else
                                     <a class="nav-link text-white"
-                                        href="{{ route('guest.jurnal-artikel.index') }}">Jurnal &
-                                        Artikel</a>
+                                        href="{{ route('guest.jurnal-artikel.index') }}"><small>Jurnal &
+                                            Artikel</small></a>
                                 @endif
                             </li>
 
                             {{-- buku --}}
                             <li class="nav-item mx-2">
                                 @if (Auth::check())
-                                    <a class="nav-link text-white" href="{{ route('user.buku.index') }}">Buku</a>
+                                    <a class="nav-link text-white"
+                                        href="{{ route('user.buku.index') }}"><small>Buku</small></a>
                                 @else
-                                    <a class="nav-link text-white" href="{{ route('guest.buku.index') }}">Buku</a>
+                                    <a class="nav-link text-white"
+                                        href="{{ route('guest.buku.index') }}"><small>Buku</small></a>
                                 @endif
                             </li>
 
                             {{-- event --}}
                             <li class="nav-item mx-2">
                                 @if (Auth::check())
-                                    <a class="nav-link text-white" href="{{ route('user.event.index') }}">Event</a>
+                                    <a class="nav-link text-white"
+                                        href="{{ route('user.event.index') }}"><small>Event</small></a>
                                 @else
-                                    <a class="nav-link text-white" href="{{ route('guest.event.index') }}">Event</a>
+                                    <a class="nav-link text-white"
+                                        href="{{ route('guest.event.index') }}"><small>Event</small></a>
                                 @endif
                             </li>
 
                             {{-- about --}}
                             <li class="nav-item mx-2">
-                                <a class="nav-link text-white" href="{{ route('about') }}">About</a>
+                                <a class="nav-link text-white" href="{{ route('about') }}"><small>About</small></a>
                             </li>
 
                             {{-- search --}}
