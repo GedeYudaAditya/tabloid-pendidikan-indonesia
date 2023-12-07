@@ -321,18 +321,18 @@
                     <h6>
                         @if (Auth::check())
                             @if (Auth::user()->role == 'admin')
-                                <a href="{{ route('admin.berita.edit', $item->slug) }}"
+                                <a href="{{ route('admin.jurnal-artikrl.edit', $item->slug) }}"
                                     class="text-decoration-none text-dark">
                                     {{ $judul }}
                                 </a>
                             @else
-                                <a href="{{ route('user.berita.detail', $item->slug) }}"
+                                <a href="{{ route('user.jurnal-artikrl.show', $item->slug) }}"
                                     class="text-decoration-none text-dark">
                                     {{ $judul }}
                                 </a>
                             @endif
                         @else
-                            <a href="{{ route('guest.berita.detail', $item->slug) }}"
+                            <a href="{{ route('guest.jurnal-artikel.show', ['artikel', $item->slug]) }}"
                                 class="text-decoration-none text-dark">
                                 {{ $judul }}
                             </a>
