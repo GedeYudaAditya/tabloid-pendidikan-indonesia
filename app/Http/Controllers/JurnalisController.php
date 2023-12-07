@@ -150,7 +150,9 @@ class JurnalisController extends Controller
                 // delete old file
                 $gambar = json_decode($jurnal->gambar);
                 foreach ($gambar as $g) {
-                    unlink(public_path('img/jurnal-arikel/' . $g));
+                    if (file_exists(public_path('img/jurnal-arikel/' . $g))) {
+                        unlink(public_path('img/jurnal-arikel/' . $g));
+                    }
                 }
             }
 
@@ -160,7 +162,9 @@ class JurnalisController extends Controller
                 $attachment->move(public_path('attachment'), $attachmentName);
 
                 // delete old file
-                unlink(public_path('attachment/' . $jurnal->attachment));
+                if ($jurnal->attachment && file_exists(public_path('attachment/' . $jurnal->attachment))) {
+                    unlink(public_path('attachment/' . $jurnal->attachment));
+                }
             }
 
             $jurnal->update([
@@ -193,14 +197,20 @@ class JurnalisController extends Controller
             $gambar = json_decode($jurnal->gambar);
             if (is_array($gambar)) {
                 foreach ($gambar as $g) {
-                    unlink(public_path('img/jurnal-arikel/' . $g));
+                    if (file_exists(public_path('img/jurnal-arikel/' . $g))) {
+                        unlink(public_path('img/jurnal-arikel/' . $g));
+                    }
                 }
             } else {
-                unlink(public_path('img/jurnal-arikel/' . $gambar));
+                if (file_exists(public_path('img/jurnal-arikel/' . $gambar))) {
+                    unlink(public_path('img/jurnal-arikel/' . $gambar));
+                }
             }
 
             if ($jurnal->attachment) {
-                unlink(public_path('attachment/' . $jurnal->attachment));
+                if (file_exists(public_path('attachment/' . $jurnal->attachment))) {
+                    unlink(public_path('attachment/' . $jurnal->attachment));
+                }
             }
 
             $jurnal->delete();
