@@ -22,11 +22,11 @@
             /* fallback for old browsers */
             background: #4facfe;
             /* Chrome 10-25,
-                                                                                                                                                                                    Safari 5.1-6 */
+                                                                                                                                                                                            Safari 5.1-6 */
             background: -webkit-linear-gradient(to bottom right, rgba(79, 172, 254,
                         1), rgba(0, 242, 254, 1));
             /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+,
-                                                                                                                                                                                    Safari 7+ */
+                                                                                                                                                                                            Safari 7+ */
             background: linear-gradient(to bottom right, rgba(79, 172, 254, 1), rgba(0,
                         242, 254, 1))
         }
@@ -135,7 +135,8 @@
                             </div>
                         @else
                             <img src="{{ asset('img/berita/' . json_decode($berita->gambar)) }}"
-                                style="width: 50%; float: left" class="me-3" alt="{{ $berita->gambar }}">
+                                style="width: 50%; height:200px; float: left; object-fit: cover; object-position: center;"
+                                class="me-3" alt="{{ $berita->gambar }}">
                         @endif
                     @else
                         <img src="" alt="" id="preview" class="img-fluid">

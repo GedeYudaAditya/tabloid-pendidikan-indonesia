@@ -37,7 +37,7 @@ class RedaksiController extends Controller
             'liputans' => Liputan::where('status', 'mengantri')->get(),
             // berita where status != publish
             'beritas' => Berita::get()->where('status', '!=', 'publish'),
-            'beritas_lama' => Berita::get()->where('status', '!=', 'publish')->where('created_at', '<=', date('Y-m-d', strtotime('-3 months'))),
+            'beritas_lama' => Berita::get()->where('created_at', '<=', date('Y-m-d', strtotime('-3 months'))),
         ];
         return view('redaksi.unpublish.index', $data);
     }
