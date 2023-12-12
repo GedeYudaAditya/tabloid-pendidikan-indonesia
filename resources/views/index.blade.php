@@ -91,7 +91,7 @@
     <form action="">
         <div class="row mb-3">
             {{-- option tahun --}}
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="input-group mb-3">
                     <label class="input-group-text" for="tahun">Tahun</label>
                     <select class="form-select" id="tahun" name="tahun">
@@ -106,8 +106,23 @@
                 </div>
             </div>
 
+            {{-- option bulan --}}
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="bulan">Bulan</label>
+                    <select class="form-select" id="bulan" name="bulan">
+                        <option value="">Pilih bulan</option>
+                        @foreach ($bulan as $key => $item)
+                            <option value="{{ $key }}" {{ request()->bulan == $key ? 'selected' : '' }}>
+                                {{ $item }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
             {{-- option volume --}}
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="input-group mb-3">
                     <label class="input-group-text" for="volume">Volume</label>
                     <select class="form-select" id="volume" name="volume">
@@ -124,26 +139,101 @@
         </div>
     </form>
 
-    {{-- check if there is request from this page --}}
-    @if (request()->tahun || request()->volume)
-        {{-- search the berita with that key --}}
-        @php
-            if (request()->tahun && !request()->volume) {
-                $berita = App\Models\Berita::where('status', 'publish')
-                    ->where('created_at', 'like', '%' . request()->tahun . '%')
-                    ->paginate(6);
-            } elseif (request()->volume && !request()->tahun) {
-                $berita = App\Models\Berita::where('status', 'publish')
-                    ->where('volume', request()->volume)
-                    ->paginate(6);
+    {{-- check if there is request from this page
+    @if (request()->tahun || request()->volume || request()->bulan) --}}
+    {{-- search the berita with that key --}}
+    @php
+        $beritaQuery = App\Models\Berita::where('status', 'publish');
+
+        $like = App\Models\Berita::whereBetween('created_at', [Carbon\Carbon::now()->startOfMonth(), Carbon\Carbon::now()->endOfMonth()])->orderBy('created_at', 'asc');
+
+        if (request()->has('tahun') && request()->tahun != '') {
+            $beritaQuery->where('created_at', 'like', '%' . request()->tahun . '%');
+            $like->where('created_at', 'like', '%' . request()->tahun . '%');
+        }
+
+        if (request()->has('bulan') && request()->bulan != '') {
+            $beritaQuery->whereMonth('created_at', request()->bulan);
+            $like->whereMonth('created_at', request()->bulan);
+        }
+
+        if (request()->has('volume') && request()->volume != '') {
+            $beritaQuery->where('volume', request()->volume);
+            $like->where('volume', request()->volume);
+        }
+
+        // all berita
+        $berita = $beritaQuery->paginate(6);
+
+        // latest berita kecamatan populer
+        $latest = $berita
+            ->where('kecamatan_id', $kecamatanPopulerId)
+            ->sortByDesc('created_at')
+            ->first();
+
+        // ambil data tanpa data yang paling populer
+        if ($latest != null) {
+            $data = $kabupaten->where('id', $latest->kecamatan->kabupaten->id);
+            $data = $data->first()->kecamatan->sortByDesc('created_at');
+        } else {
+            $data = [];
+        }
+        $data2 = [];
+        foreach ($data as $key => $value) {
+            // check if this kecamatan have berita
+            if ($value->berita->count() == 0) {
+                // delete this kecamatan
+                unset($data[$key]);
             } else {
-                $berita = App\Models\Berita::where('status', 'publish')
-                    ->where('created_at', 'like', '%' . request()->tahun . '%')
-                    ->where('volume', request()->volume)
-                    ->paginate(6);
+                // get the all berita
+                foreach ($value->berita as $key2 => $value2) {
+                    if ($value2->status == 'publish' && $value2->id != $latest->id) {
+                        array_push($data2, $value2);
+                    }
+                }
             }
-        @endphp
-    @endif
+        }
+
+        // most popular berita
+        $like = $like->get();
+
+        // get the most like
+        if ($like) {
+            $like = $like->max('like');
+        } else {
+            $like = 0;
+        }
+
+        // get the data with value of most like
+        $mostPopular = App\Models\Berita::where('like', $like)->orderBy('created_at', 'asc');
+
+        if (request()->has('tahun') && request()->tahun != '') {
+            $mostPopular->where('created_at', 'like', '%' . request()->tahun . '%');
+            // filter array data2 with request tahun
+            $data2 = array_filter($data2, function ($item) {
+                return $item->created_at->format('Y') == request()->tahun;
+            });
+        }
+
+        if (request()->has('bulan') && request()->bulan != '') {
+            $mostPopular->whereMonth('created_at', request()->bulan);
+            // filter array data2 with request bulan
+            $data2 = array_filter($data2, function ($item) {
+                return $item->created_at->format('m') == request()->bulan;
+            });
+        }
+
+        if (request()->has('volume') && request()->volume != '') {
+            $mostPopular->where('volume', request()->volume);
+            // filter array data2 with request volume
+            $data2 = array_filter($data2, function ($item) {
+                return $item->volume == request()->volume;
+            });
+        }
+
+        $mostPopular = $mostPopular->first();
+    @endphp
+    {{-- @endif --}}
 
     {{-- sekapur sirih --}}
     @if ($berita->count() > 0)
@@ -154,7 +244,7 @@
                 @if ($berita->count() > 0)
                     {{-- get latest berita --}}
                     @php
-                        $latest = $berita->sortByDesc('created_at')->first();
+                        $latest = $berita->first();
                         $pertama = $latest;
                     @endphp
 
@@ -245,10 +335,7 @@
                 @if ($berita->count() > 1)
                     {{-- get latest berita --}}
                     @php
-                        $latest = $berita
-                            ->sortByDesc('created_at')
-                            ->skip(1)
-                            ->first();
+                        $latest = $berita->skip(1)->first();
 
                         $kedua = $latest;
                     @endphp
@@ -338,7 +425,7 @@
             </div>
             @if ($berita->count() > 2)
                 @php
-                    $data = $berita->sortByDesc('created_at')->skip(2);
+                    $data = $berita->skip(2);
                 @endphp
                 @foreach ($data as $item)
                     <div class="col-md-3">
@@ -415,22 +502,8 @@
         <h4>Berita Terpopuler</h4>
 
         <div class="row mb-5">
-            @if ($berita->count() > 0)
+            @if ($berita->count() > 0 && $mostPopular != null)
                 <div class="col-md-7 mb-5">
-                    @php
-                        // get data that have most like in this week
-                        $like = App\Models\Berita::whereBetween('created_at', [Carbon\Carbon::now()->startOfWeek(), Carbon\Carbon::now()->endOfWeek()])->first();
-
-                        // get the most like
-                        if ($like) {
-                            $like = $like->max('like');
-                        } else {
-                            $like = 0;
-                        }
-
-                        // get the data with value of most like
-                        $mostPopular = App\Models\Berita::where('like', $like)->first();
-                    @endphp
                     @if (is_array(json_decode($mostPopular->gambar)))
                         <div style="margin-bottom: 15px" id="carouselExampleControls2" class="carousel slide"
                             data-bs-ride="carousel">
@@ -584,14 +657,6 @@
 
         <h4>Berita Daerah {{ $kecamatanPopularName }}</h4>
         <div class="row flex-row-reverse">
-            @php
-                $latest = $berita
-                    ->where('kecamatan_id', $kecamatanPopulerId)
-                    ->sortByDesc('created_at')
-                    ->first();
-
-                $daerah = $latest;
-            @endphp
             @if ($latest)
                 <div class="col-md-7 mb-5">
                     @if (is_array(json_decode($latest->gambar)))
@@ -678,30 +743,6 @@
 
             {{-- list berita lainnya --}}
             <div class="col-md-5 mb-5">
-                @php
-                    // ambil data tanpa data yang paling populer
-                    if ($latest != null) {
-                        $data = $kabupaten->where('id', $latest->kecamatan->kabupaten->id);
-                        $data = $data->first()->kecamatan->sortByDesc('created_at');
-                    } else {
-                        $data = [];
-                    }
-                    $data2 = [];
-                    foreach ($data as $key => $value) {
-                        // check if this kecamatan have berita
-                        if ($value->berita->count() == 0) {
-                            // delete this kecamatan
-                            unset($data[$key]);
-                        } else {
-                            // get the all berita
-                            foreach ($value->berita as $key2 => $value2) {
-                                if ($value2->status == 'publish' && $value2->id != $latest->id) {
-                                    array_push($data2, $value2);
-                                }
-                            }
-                        }
-                    }
-                @endphp
                 @forelse ($data2 as $item)
                     <div class="row mb-2">
                         @if (is_array(json_decode($item->gambar)))

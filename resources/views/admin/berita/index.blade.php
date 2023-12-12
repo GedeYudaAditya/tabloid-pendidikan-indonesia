@@ -9,7 +9,10 @@
     </div>
 
     <div class="container">
-        {{-- <a href="{{ route('admin.berita.create') }}" class="btn btn-primary mb-3">Tambah Berita</a> --}}
+        <a href="{{ route('admin.berita.revisi') }}" class="btn btn-primary mb-3">
+            <i class="fas fa-eye"></i>
+            Lihat Berita Revisi
+        </a>
 
         {{-- datatable --}}
         <table id="table" class="table table-striped table-bordered">

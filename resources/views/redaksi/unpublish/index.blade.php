@@ -15,6 +15,8 @@
             Berita yang belum dipublikasikan
         </h4>
         <a href="{{ route('redaksi.berita-unpublish.create') }}" class="btn btn-primary mb-3">Tambah Berita</a>
+        <a href="{{ route('redaksi.berita-unpublish.old-create') }}" class="btn btn-primary mb-3">Tambah Berita Lama</a>
+        <a href="{{ route('redaksi.berita-unpublish.revisi') }}" class="btn btn-primary mb-3">Daftar Revisi Berita</a>
 
         {{-- datatable --}}
         <table id="table" class="table table-striped table-bordered">
@@ -120,6 +122,63 @@
                 @endforeach
             </tbody>
         </table>
+
+        {{-- table berita lama --}}
+        <h4>
+            Berita Lama
+        </h4>
+
+        {{-- datatable --}}
+        <table id="table3" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Judul Berita</th>
+                    <th>
+                        Nama Kecamatan
+                    </th>
+                    <th>
+                        Nama Kabupaten
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($beritas_lama as $item)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $item->judul }}</td>
+                        <td>{{ $item->kecamatan->nama_kecamatan }}</td>
+                        <td>{{ $item->kecamatan->kabupaten->nama_kabupaten }}</td>
+                        <td class="text-center">
+                            @if ($item->status == 'mengantri')
+                                <span class="badge bg-secondary text-light">{{ Str::upper($item->status) }}</span>
+                            @elseif($item->status == 'ditolak')
+                                <span class="badge bg-danger text-light">{{ Str::upper($item->status) }}</span>
+                            @elseif($item->status == 'revisi')
+                                <span class="badge bg-warning text-light">{{ Str::upper($item->status) }}</span>
+                            @else
+                                <span class="badge bg-success text-light">{{ Str::upper($item->status) }}</span>
+                            @endif
+                        </td>
+                        <td>
+                            <a href="{{ route('redaksi.berita-unpublish.edit', $item->id) }}"
+                                class="btn btn-warning">Edit</a>
+                            <form action="{{ route('redaksi.berita-unpublish.delete', $item->id) }}" method="POST"
+                                class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-danger"
+                                    onclick="return confirm('Apakah anda yakin ingin menghapus data ini?')">Hapus</button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 @endsection
 
@@ -132,6 +191,10 @@
 
         $(document).ready(function() {
             $('#table2').DataTable();
+        });
+
+        $(document).ready(function() {
+            $('#table3').DataTable();
         });
     </script>
 @endsection

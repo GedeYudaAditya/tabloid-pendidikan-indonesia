@@ -1,10 +1,8 @@
 @extends('layouts.admin.app')
 
-{{-- @dd($liputans) --}}
-
 @section('content')
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Manajemen Liputan dan Berita | Tambah Berita</h1>
+        <h1 class="h2">Manajemen Liputan dan Berita | Tambah Berita Lama</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
 
         </div>
@@ -18,35 +16,44 @@
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
-
                 </ul>
             </div>
         @endif
 
-        <form action="{{ route('redaksi.berita-unpublish.store') }}" method="post" enctype="multipart/form-data">
+        <form action="{{ route('redaksi.berita-unpublish.old-store') }}" method="post" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
                 <label for="nama_berita1" class="form-label">Judul Berita</label>
-                <input type="text" name="judul" class="form-control" id="nama_berita1" aria-describedby="beritaHelp"
-                    value="{{ $liputan->judul }}">
+                <input type="text" name="judul" class="form-control" id="nama_berita1" aria-describedby="beritaHelp">
                 <div id="beritaHelp" class="form-text">
                     Masukkan judul berita.
                 </div>
             </div>
 
-            {{-- option for liputan --}}
+            {{-- Option Kab --}}
             <div class="mb-3">
-                <label for="liputan" class="form-label">Pilih Liputan</label>
-                <select class="form-select" name="liputan_id" id="liputan" aria-label="Default select example"
+                <label for="kabupaten" class="form-label">Pilih Kabupaten</label>
+                <select class="form-select" name="kabupaten_id" id="kabupaten" aria-label="Default select example"
                     aria-describedby="help">
-                    {{-- <option selected disabled>Pilih Liputan</option> --}}
-                    @foreach ($liputans as $item)
-                        <option value="{{ $item->id }}" {{ $liputan->id == $item->id ? 'selected' : '' }}>
-                            {{ $item->judul }}</option>
+                    <option selected disabled>Pilih kabupaten</option>
+                    @foreach ($kabupaten as $item)
+                        <option value="{{ $item->id }}">{{ $item->nama_kabupaten }}</option>
                     @endforeach
                 </select>
                 <div id="help" class="form-text">
-                    Kategori liputan untuk berita di publikasikan.
+                    Kategori kabupaten untuk berita di publikasikan.
+                </div>
+            </div>
+
+            {{-- option untuk pilih kecamatan --}}
+            <div class="mb-3">
+                <label for="kecamatan" class="form-label">Pilih Kecamatan</label>
+                <select class="form-select" name="kecamatan_id" id="kecamatan" aria-label="Default select example"
+                    aria-describedby="help">
+                    <option selected disabled>Pilih Kecamatan</option>
+                </select>
+                <div id="help" class="form-text">
+                    Kategori kecamatan untuk berita di publikasikan.
                 </div>
             </div>
 
@@ -92,22 +99,19 @@
             <div class="mb-3">
                 <label for="isi" class="form-label">Isi Berita</label>
                 <div class="row">
-                    <div class="col-md-5">
-                        {{-- <p>Isi Liputan</p> --}}
-                        <div name="liputan" disabled style="width: 100%; height: 300px; overflow-y: auto" id="liputan-text"
-                            readonly>
-                            {!! $liputan->isi !!}</div>
-                        {{-- copy clipboard button --}}
-                        <button type="button" class="btn btn-small btn-primary mt-3"
-                            onclick="copyToClipboard('#liputan-text')">
-                            <i class="fas fa-copy"></i>
-                            Copy
-                        </button>
-                    </div>
-                    <div class="col-md-7">
+                    <div class="col-12">
                         {{-- <p>Isi yang di telah edit</p> --}}
                         <textarea class="form-control" name="isi" id="isi" rows="3"></textarea>
                     </div>
+                </div>
+            </div>
+
+            {{-- created_at --}}
+            <div class="mb-3">
+                <label for="created_at" class="form-label">Tanggal Berita</label>
+                <input type="date" name="created_at" class="form-control" id="created_at" aria-describedby="beritaHelp">
+                <div id="beritaHelp" class="form-text">
+                    Masukkan tanggal berita.
                 </div>
             </div>
 
@@ -122,20 +126,59 @@
 
     <script>
         $(document).ready(function() {
-            $('#liputan').select2();
+            $('#kabupaten').select2();
         });
+    </script>
 
-        // copy to clipboard
-        function copyToClipboard(element) {
-            var $temp = $("<input>");
-            $("body").append($temp);
-            $temp.val($(element).text()).select();
-            document.execCommand("copy");
-            $temp.remove();
+    <script>
+        $(document).ready(function() {
+            $('#kecamatan').select2();
+        });
+    </script>
 
-            // alert
-            alert('Berhasil di copy');
-        }
+    <script>
+        $(document).ready(function() {
+            // check if kabupaten_id is selected
+            $('#kabupaten').change(function() {
+                // get kabupaten_id
+                var kabupaten_id = $(this).val();
+                // empty kecamatan_id
+                $('#kecamatan').empty();
+                // ajax call
+                $.ajax({
+                    url: "{{ route('api.get.kecamatan') }}",
+                    type: 'GET',
+                    data: {
+                        kabupaten_id: kabupaten_id
+                    },
+                    success: function(response) {
+                        // console.log(response);
+                        // check if response is empty
+                        if (response.length == 0) {
+                            // append kecamatan_id
+                            $('#kecamatan').append(
+                                '<option selected disabled>Pilih Kecamatan</option>'
+                            );
+                        } else {
+                            // append kecamatan_id
+                            $('#kecamatan').append(
+                                '<option selected disabled>Pilih Kecamatan</option>'
+                            );
+                            // loop through response
+                            $.each(response, function(key, value) {
+                                // append kecamatan_id
+                                $('#kecamatan').append(
+                                    '<option class="' + value.kabupaten_id +
+                                    '" value="' +
+                                    value.id + '">' + value.nama_kecamatan +
+                                    '</option>'
+                                );
+                            });
+                        }
+                    }
+                });
+            });
+        });
     </script>
 
     <script>
@@ -173,7 +216,6 @@
                         console.log(liputan)
 
                         // download image
-                        // if not array
                         if (liputan.gambar.length != undefined) {
                             for (let i = 0; i < liputan.gambar.length; i++) {
                                 // make element for download image in #images-download

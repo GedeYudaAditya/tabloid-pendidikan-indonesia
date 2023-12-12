@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Berita;
 use App\Models\HariPeringatan;
+use App\Models\HistoryRevisiBerita;
 use App\Models\Kabupaten;
 use App\Models\Kecamatan;
 use App\Models\Liputan;
@@ -36,6 +37,7 @@ class RedaksiController extends Controller
             'liputans' => Liputan::where('status', 'mengantri')->get(),
             // berita where status != publish
             'beritas' => Berita::get()->where('status', '!=', 'publish'),
+            'beritas_lama' => Berita::get()->where('status', '!=', 'publish')->where('created_at', '<=', date('Y-m-d', strtotime('-3 months'))),
         ];
         return view('redaksi.unpublish.index', $data);
     }
@@ -111,8 +113,18 @@ class RedaksiController extends Controller
                 'volume' => $request->volume,
             ];
 
-            Berita::create($data);
+            $berita = Berita::create($data);
 
+            // HistoryRevisiBerita::create([
+            //     'berita_id' => $berita->id,
+            //     'judul' => $berita->judul,
+            //     'slug' => $slug,
+            //     'isi' => $berita->isi,
+            //     'liputan_id' => $berita->liputan_id,
+            //     'gambar' => $encoded,
+            //     'kecamatan_id' => $berita->kecamatan_id,
+            //     'user_id' => auth()->user()->id
+            // ]);
 
             // update status liputan
             $liputan->update([
@@ -138,6 +150,104 @@ class RedaksiController extends Controller
             // 'beritas' => Berita::get()->where('status', '!=', 'publish'),
         ];
         return view('redaksi.unpublish.create-from-liputan', $data);
+    }
+
+    public function oldCreate()
+    {
+        $data = [
+            'title' => 'Redaksi || Manajemen Liputan dan Berita || Create',
+            'kabupaten' => Kabupaten::all(),
+        ];
+
+        return view('redaksi.unpublish.old-create', $data);
+    }
+
+    public function oldStore(Request $request)
+    {
+        // berita lama harus dibuat dengan 3 bulan sebelum hari ini
+        $date3months = date('Y-m-d', strtotime('-3 months'));
+
+        $request->validate([
+            'judul' => 'required',
+            'isi' => 'required',
+            'gambar' => 'nullable',
+            'gambar.*' => 'nullable|image|mimes:jpg,jpeg,png|max:10240',
+            'kecamatan_id' => 'required',
+            'volume' => 'required',
+            'created_at' => 'required|date|before_or_equal:' . $date3months,
+            // 'slug' => 'required',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $slug = Str::slug($request->judul . '-' . time());
+
+            if ($request->hasFile('gambar')) {
+                $foto = $request->file('gambar');
+
+                // multiple file
+                foreach ($foto as $f) {
+                    $filename = time() . '-' . $f->getClientOriginalName();
+                    $f->move(public_path('img/berita'), $filename);
+
+                    $data[] = $filename;
+                }
+            } else {
+                $data = null;
+            }
+
+            $encoded = json_encode($data);
+
+            $data = [
+                'judul' => $request->judul,
+                'isi' => $request->isi,
+                'gambar' => $encoded,
+                'kecamatan_id' => $request->kecamatan_id,
+                'slug' => $slug,
+                'reporter_id' => auth()->user()->id,
+                'status' => 'dibuat',
+                'created_at' => $request->created_at,
+                'updated_at' => $request->created_at,
+            ];
+
+            $liputan = Liputan::create($data);
+
+            // create berita from liputan
+            $data = [
+                'judul' => $request->judul,
+                'isi' => $request->isi,
+                'gambar' => $encoded,
+                'kecamatan_id' => $request->kecamatan_id,
+                'liputan_id' => $liputan->id,
+                'slug' => $slug,
+                'user_id' => auth()->user()->id,
+                'status' => 'draft',
+                'volume' => $request->volume,
+                'created_at' => $request->created_at,
+                'updated_at' => $request->created_at,
+            ];
+
+            $berita = Berita::create($data);
+
+            // HistoryRevisiBerita::create([
+            //     'berita_id' => $berita->id,
+            //     'judul' => $berita->judul,
+            //     'slug' => $slug,
+            //     'isi' => $berita->isi,
+            //     'liputan_id' => $berita->liputan_id,
+            //     'gambar' => $encoded,
+            //     'kecamatan_id' => $berita->kecamatan_id,
+            //     'user_id' => auth()->user()->id
+            // ]);
+
+            DB::commit();
+            return redirect()->route('redaksi.berita-unpublish.index')->with('success', 'Berhasil menambahkan Berita');
+        } catch (\Throwable $th) {
+            DB::rollback();
+            dd($th);
+            return redirect()->route('redaksi.berita-unpublish.index')->with('error', 'Gagal menambahkan Berita');
+        }
     }
 
     public function edit($id)
@@ -383,5 +493,44 @@ class RedaksiController extends Controller
             dd($th);
             return redirect()->route('redaksi.sekapur-sirih.index')->with('error', 'Gagal mengubah Sekapur Sirih');
         }
+    }
+
+    public function beritaRevision()
+    {
+        $historyRevisiBerita = HistoryRevisiBerita::all();
+        $berita = [];
+
+        foreach ($historyRevisiBerita as $key => $value) {
+            $berita[$key] = Berita::findOrFail($value->berita_id);
+        }
+
+        // remove duplicate
+        $berita = array_unique($berita);
+
+        $data = [
+            'title' => 'Redaksi || Berita || Revisi',
+            'berita' => $berita
+        ];
+        return view('redaksi.unpublish.revisi', $data);
+    }
+
+    public function beritaRevisionDetail($id)
+    {
+        $historyRevisiBerita = HistoryRevisiBerita::where('berita_id', $id)->get();
+        $data = [
+            'title' => 'Redaksi || Berita || Revisi || Detail',
+            'historyBerita' => $historyRevisiBerita
+        ];
+        return view('redaksi.unpublish.revisi-detail', $data);
+    }
+
+    public function beritaRevisionDetailShow($slug)
+    {
+        $historyRevisiBerita = HistoryRevisiBerita::where('slug', $slug)->firstOrFail();
+        $data = [
+            'title' => 'Redaksi || Berita || Revisi || Detail || Show',
+            'berita' => $historyRevisiBerita
+        ];
+        return view('redaksi.unpublish.revisi-detail-show', $data);
     }
 }

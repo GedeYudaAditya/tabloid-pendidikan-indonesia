@@ -6,6 +6,7 @@ use App\Models\Artikle;
 use App\Models\Berita;
 use App\Models\Buku;
 use App\Models\Event;
+use App\Models\HistoryRevisiBerita;
 use App\Models\Jurnal;
 use App\Models\Kabupaten;
 use App\Models\Kecamatan;
@@ -240,7 +241,17 @@ class AdminController extends Controller
         $imageName = time() . '.' . $request->gambar->extension();
         $request->gambar->move(public_path('img/berita'), $imageName);
 
-        Berita::create([
+        $berita = Berita::create([
+            'judul' => $request->judul,
+            'slug' => $slug,
+            'isi' => $request->isi,
+            'gambar' => $imageName,
+            'kecamatan_id' => $request->kecamatan_id,
+            'user_id' => auth()->user()->id
+        ]);
+
+        HistoryRevisiBerita::create([
+            'berita_id' => $berita->id,
             'judul' => $request->judul,
             'slug' => $slug,
             'isi' => $request->isi,
@@ -282,12 +293,23 @@ class AdminController extends Controller
             $imageName = Berita::findOrFail($id)->gambar;
         }
 
-        Berita::findOrFail($id)->update([
+        $berita = Berita::findOrFail($id)->update([
             'judul' => $request->judul,
             'slug' => $slug,
             'isi' => $request->isi,
             'gambar' => $imageName,
             'kecamatan_id' => $request->kecamatan_id
+        ]);
+
+        HistoryRevisiBerita::create([
+            'berita_id' => $berita->id,
+            'judul' => $berita->judul,
+            'slug' => $slug,
+            'isi' => $berita->isi,
+            'gambar' => $imageName,
+            'liputan_id' => $berita->liputan_id, // 'liputan_id' => $request->liputan_id,
+            'kecamatan_id' => $berita->kecamatan_id,
+            'user_id' => auth()->user()->id
         ]);
 
         return redirect()->route('admin.berita.index')->with('success', 'Data berhasil diubah');
@@ -312,7 +334,19 @@ class AdminController extends Controller
             'status' => 'ditolak'
         ]);
 
+
         $slug = Str::slug($berita->judul . '-' . time());
+
+        HistoryRevisiBerita::create([
+            'berita_id' => $berita->id,
+            'judul' => $berita->judul,
+            'slug' => $slug,
+            'isi' => $berita->isi,
+            'gambar' => $berita->gambar,
+            'liputan_id' => $berita->liputan_id,
+            'kecamatan_id' => $berita->kecamatan_id,
+            'user_id' => $berita->user_id
+        ]);
 
         $berita->saranRevisi()->create([
             'isi' => $request->saran_revisi,
@@ -1075,5 +1109,44 @@ class AdminController extends Controller
         }
 
         return redirect()->route('admin.jurnal-artikel.index')->with('success', 'Data berhasil diubah');
+    }
+
+    public function beritaRevision()
+    {
+        $historyRevisiBerita = HistoryRevisiBerita::all();
+        $berita = [];
+
+        foreach ($historyRevisiBerita as $key => $value) {
+            $berita[$key] = Berita::findOrFail($value->berita_id);
+        }
+
+        // remove duplicate
+        $berita = array_unique($berita);
+
+        $data = [
+            'title' => 'Admin || Berita || Revisi',
+            'berita' => $berita
+        ];
+        return view('admin.berita.revisi', $data);
+    }
+
+    public function beritaRevisionDetail($id)
+    {
+        $historyRevisiBerita = HistoryRevisiBerita::where('berita_id', $id)->get();
+        $data = [
+            'title' => 'Admin || Berita || Revisi || Detail',
+            'historyBerita' => $historyRevisiBerita
+        ];
+        return view('admin.berita.revisi-detail', $data);
+    }
+
+    public function beritaRevisionDetailShow($slug)
+    {
+        $historyRevisiBerita = HistoryRevisiBerita::where('slug', $slug)->firstOrFail();
+        $data = [
+            'title' => 'Admin || Berita || Revisi || Detail || Show',
+            'berita' => $historyRevisiBerita
+        ];
+        return view('admin.berita.revisi-detail-show', $data);
     }
 }

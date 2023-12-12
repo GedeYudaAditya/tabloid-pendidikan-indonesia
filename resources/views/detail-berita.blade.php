@@ -22,11 +22,11 @@
             /* fallback for old browsers */
             background: #4facfe;
             /* Chrome 10-25,
-                                                                                                                                                                    Safari 5.1-6 */
+                                                                                                                                                                                    Safari 5.1-6 */
             background: -webkit-linear-gradient(to bottom right, rgba(79, 172, 254,
                         1), rgba(0, 242, 254, 1));
             /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+,
-                                                                                                                                                                    Safari 7+ */
+                                                                                                                                                                                    Safari 7+ */
             background: linear-gradient(to bottom right, rgba(79, 172, 254, 1), rgba(0,
                         242, 254, 1))
         }
@@ -97,6 +97,13 @@
                     {{-- convert to day_name, dd MM YY Hour:Minute --}}
                     {{ $berita->created_at->isoFormat('dddd, D MMMM Y HH:mm') }}
                 </p>
+                <b>
+                    @if ($berita->volume == 'V1')
+                        <span class="badge bg-primary text-light">Volume 1</span>
+                    @else
+                        <span class="badge bg-warning text-light">Volume 2</span>
+                    @endif
+                </b>
                 <hr>
 
                 <div class="mt-3">
@@ -367,7 +374,13 @@
 
 
                 @forelse ($kecamatan as $item)
-                    <a href="#" class="mb-3 text-decoration-none">
+                    @php
+                        $route_kec = route('guest.berita.kecamatan', $item->slug);
+                        if (auth()->check()) {
+                            $route_kec = route('user.berita.kecamatan', $item->slug);
+                        }
+                    @endphp
+                    <a href="{{ $route_kec }}" class="mb-3 text-decoration-none">
                         <div class="w-100 hover-a p-1">
                             <b>{{ $item->nama_kecamatan }}</b>
                         </div>

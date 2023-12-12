@@ -47,7 +47,7 @@ class Controller extends BaseController
         // ->reddit()
         // ->pinterest();
 
-        $berita = Berita::where('status', 'publish')->orderBy('created_at', 'desc')->paginate(6);
+        $berita = Berita::where('status', 'publish')->orderBy('created_at', 'asc')->paginate(6);
 
         $tahun = [];
         foreach ($berita as $key => $value) {
@@ -55,6 +55,21 @@ class Controller extends BaseController
         }
 
         $tahun = array_unique($tahun);
+
+        $bulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
 
         $volume = [
             'V1' => 'Volume 1',
@@ -72,6 +87,7 @@ class Controller extends BaseController
             'sponsors' => Sponsor::all(),
             'shareButtons' => $shareButtons,
             'tahun' => $tahun,
+            'bulan' => $bulan,
             'volume' => $volume,
         ];
 
@@ -174,6 +190,21 @@ class Controller extends BaseController
 
         $tahun = array_unique($tahun);
 
+        $bulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+
         $volume = [
             'V1' => 'Volume 1',
             'V2' => 'Volume 2',
@@ -186,6 +217,7 @@ class Controller extends BaseController
             'kecamatan_now' => Kecamatan::where('slug', $slug)->firstOrFail(),
             'sponsors' => Sponsor::all(),
             'tahun' => $tahun,
+            'bulan' => $bulan,
             'volume' => $volume,
         ];
         return view('berita-kecamatan', $data);

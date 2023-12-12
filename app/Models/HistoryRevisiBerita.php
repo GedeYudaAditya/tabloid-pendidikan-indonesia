@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Berita extends Model
+class HistoryRevisiBerita extends Model
 {
     use HasFactory;
 
@@ -41,8 +41,8 @@ class Berita extends Model
         return $this->hasMany(Like::class);
     }
 
-    public function historyRevisiBerita()
+    public function berita()
     {
-        return $this->hasMany(HistoryRevisiBerita::class);
+        return $this->belongsTo(Berita::class);
     }
 }

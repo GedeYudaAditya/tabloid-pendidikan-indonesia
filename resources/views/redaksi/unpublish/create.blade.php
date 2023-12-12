@@ -92,6 +92,12 @@
                         {{-- <p>Isi Liputan</p> --}}
                         <div name="liputan" disabled style="width: 100%; height: 300px; overflow-y: auto" id="liputan-text"
                             readonly></div>
+                        {{-- copy clipboard button --}}
+                        <button type="button" class="btn btn-small btn-primary mt-3"
+                            onclick="copyToClipboard('#liputan-text')">
+                            <i class="fas fa-copy"></i>
+                            Copy
+                        </button>
                     </div>
                     <div class="col-md-7">
                         {{-- <p>Isi yang di telah edit</p> --}}
@@ -204,6 +210,18 @@
                     imgPreview.src = oFREvent.target.result;
                 }
             }
+        }
+
+        // copy to clipboard
+        function copyToClipboard(element) {
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val($(element).text()).select();
+            document.execCommand("copy");
+            $temp.remove();
+
+            // alert
+            alert('Copied!');
         }
     </script>
 

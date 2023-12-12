@@ -107,6 +107,9 @@ Route::middleware(['auth', 'role'])->name('admin')->prefix('/admin')->group(func
         Route::get('/{id}/edit', [AdminController::class, 'beritaEdit'])->name('.edit');
         Route::get('/{berita:slug}/detail', [AdminController::class, 'beritaDetailAdmin'])->name('.detail');
         Route::post('/{berita:slug}/tolak', [AdminController::class, 'beritaTolak'])->name('.tolak');
+        Route::get('/revision', [AdminController::class, 'beritaRevision'])->name('.revisi');
+        Route::get('{slug}/revision/show', [AdminController::class, 'beritaRevisionDetailShow'])->name('.revisi.detail.show');
+        Route::get('/{id}/revision', [AdminController::class, 'beritaRevisionDetail'])->name('.revisi.detail');
         Route::post('/{id}/edit', [AdminController::class, 'beritaUpdate'])->name('.update');
         Route::delete('/{id}/delete', [AdminController::class, 'beritaDelete'])->name('.delete');
         Route::put('/{id}/publish', [AdminController::class, 'beritaPublish'])->name('.publish');
@@ -198,6 +201,11 @@ Route::middleware(['auth', 'role'])->name('redaksi')->prefix('redaksi')->group(f
         Route::get('/', [RedaksiController::class, 'unpublishedBerita'])->name('.index');
         Route::get('/create', [RedaksiController::class, 'Create'])->name('.create');
         Route::post('/create', [RedaksiController::class, 'Store'])->name('.store');
+        Route::get('/create-old', [RedaksiController::class, 'oldCreate'])->name('.old-create');
+        Route::post('/create-old', [RedaksiController::class, 'oldStore'])->name('.old-store');
+        Route::get('/revision', [RedaksiController::class, 'beritaRevision'])->name('.revisi');
+        Route::get('{slug}/revision/show', [RedaksiController::class, 'beritaRevisionDetailShow'])->name('.revisi.detail.show');
+        Route::get('/{id}/revision', [RedaksiController::class, 'beritaRevisionDetail'])->name('.revisi.detail');
         Route::get('/{id}/create-from-liputan', [RedaksiController::class, 'CreateFromLiputan'])->name('.create-from-liputan');
         Route::post('/{id}/create-from-liputan', [RedaksiController::class, 'StoreFromLiputan'])->name('.store-from-liputan');
         Route::get('/{id}/edit', [RedaksiController::class, 'edit'])->name('.edit');
