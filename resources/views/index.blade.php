@@ -145,7 +145,11 @@
     @php
         $beritaQuery = App\Models\Berita::where('status', 'publish');
 
-        $like = App\Models\Berita::whereBetween('created_at', [Carbon\Carbon::now()->startOfMonth(), Carbon\Carbon::now()->endOfMonth()])->orderBy('created_at', 'asc');
+        // 1 bulan
+        // $like = App\Models\Berita::whereBetween('created_at', [Carbon\Carbon::now()->startOfMonth(), Carbon\Carbon::now()->endOfMonth()])->orderBy('created_at', 'asc');
+
+        // 3 bulan
+        $like = App\Models\Berita::whereBetween('created_at', [Carbon\Carbon::now()->subMonths(3), Carbon\Carbon::now()])->orderBy('created_at', 'asc');
 
         if (request()->has('tahun') && request()->tahun != '') {
             $beritaQuery->where('created_at', 'like', '%' . request()->tahun . '%');

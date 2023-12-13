@@ -119,7 +119,18 @@
     @php
         $beritaQuery = App\Models\Berita::where('kecamatan_id', $kecamatan_now->id)->where('status', 'publish');
 
-        $like = App\Models\Berita::whereBetween('created_at', [Carbon\Carbon::now()->startOfWeek(), Carbon\Carbon::now()->endOfWeek()])
+        // 1 week
+        // $like = App\Models\Berita::whereBetween('created_at', [Carbon\Carbon::now()->startOfWeek(), Carbon\Carbon::now()->endOfWeek()])
+        //     ->where('kecamatan_id', $kecamatan_now->id)
+        //     ->orderBy('created_at', 'asc');
+
+        // 1 month
+        // $like = App\Models\Berita::whereBetween('created_at', [Carbon\Carbon::now()->startOfMonth(), Carbon\Carbon::now()->endOfMonth()])
+        //     ->where('kecamatan_id', $kecamatan_now->id)
+        //     ->orderBy('created_at', 'asc');
+
+        // 3 month
+        $like = App\Models\Berita::whereBetween('created_at', [Carbon\Carbon::now()->subMonths(3), Carbon\Carbon::now()])
             ->where('kecamatan_id', $kecamatan_now->id)
             ->orderBy('created_at', 'asc');
 
