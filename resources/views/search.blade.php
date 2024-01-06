@@ -53,9 +53,9 @@
                 <div class="col-md-4">
                     <div class="card mb-3" style="position: relative">
                         @if (is_array(json_decode($item->gambar)))
-                            <img src="{{ asset('img/berita/' . json_decode($item->gambar))[0] }}" class="card-img-top"
+                            <img src="{{ asset('img/berita/' . json_decode($item->gambar)[0]) }}" class="card-img-top"
                                 style="height: 250px; object-fit: cover; object-position: center"
-                                alt="{{ asset('img/berita/' . json_decode($item->gambar))[0] }}">
+                                alt="{{ asset('img/berita/' . json_decode($item->gambar)[0]) }}">
                         @else
                             <img src="{{ asset('img/berita/' . json_decode($item->gambar)) }}" class="card-img-top"
                                 style="height: 250px; object-fit: cover; object-position: center"
