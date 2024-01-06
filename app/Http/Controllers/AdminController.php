@@ -951,7 +951,8 @@ class AdminController extends Controller
             'judul' => 'required|unique:events,judul',
             'isi' => 'required',
             'jenis' => 'required',
-            'gambar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            'gambar.*' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'gambar' => 'required',
         ]);
 
         try {
@@ -959,16 +960,21 @@ class AdminController extends Controller
             // make slug
             $slug = Str::slug($request->judul . '-' . time());
 
-            // upload image
-            $imageName = time() . '.' . $request->gambar->extension();
-            $request->gambar->move(public_path('img/event'), $imageName);
+            // upload multiplay image
+            $imageName = [];
+            foreach ($request->gambar as $key => $value) {
+                $imageName[$key] = time() . '.' . $value->extension();
+                $value->move(public_path('img/event'), $imageName[$key]);
+            }
+
+            $gambar = json_encode($imageName);
 
             Event::create([
                 'judul' => $request->judul,
                 'slug' => $slug,
                 'isi' => $request->isi,
                 'jenis' => $request->jenis,
-                'gambar' => $imageName,
+                'gambar' => $gambar,
                 'user_id' => auth()->user()->id
             ]);
 

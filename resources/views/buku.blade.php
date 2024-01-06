@@ -50,43 +50,45 @@
     @if ($buku->count() > 0)
         <div class="row">
             @foreach ($buku as $item)
-                <div class="col-md-4">
-                    <div class="card mb-3" style="position: relative">
-                        @if (is_array($item->gambar))
-                            <img src="{{ asset('img/buku/' . $item->gambar)[0] }}" class="card-img-top"
-                                style="height: 250px; object-fit: cover; object-position: center"
-                                alt="{{ asset('img/buku/' . $item->gambar)[0] }}">
-                        @else
-                            <img src="{{ asset('img/buku/' . $item->gambar) }}" class="card-img-top"
-                                style="height: 250px; object-fit: cover; object-position: center"
-                                alt="{{ asset('img/buku/' . $item->gambar) }}">
-                        @endif
-                        <div class="card-body app-overlay-bg" style="position: absolute; bottom: 0; width: 100%;">
-                            @php
-                                $judul = strip_tags($item->judul);
-                                $judul = substr($judul, 0, 20);
+                <a href="{{ route('guest.buku.show', $item->slug) }}" class="text-decoration-none text-dark">
+                    <div class="col-md-4">
+                        <div class="card mb-3" style="position: relative">
+                            @if (is_array($item->gambar))
+                                <img src="{{ asset('img/buku/' . $item->gambar)[0] }}" class="card-img-top"
+                                    style="height: 250px; object-fit: cover; object-position: center"
+                                    alt="{{ asset('img/buku/' . $item->gambar)[0] }}">
+                            @else
+                                <img src="{{ asset('img/buku/' . $item->gambar) }}" class="card-img-top"
+                                    style="height: 250px; object-fit: cover; object-position: center"
+                                    alt="{{ asset('img/buku/' . $item->gambar) }}">
+                            @endif
+                            <div class="card-body app-overlay-bg" style="position: absolute; bottom: 0; width: 100%;">
+                                @php
+                                    $judul = strip_tags($item->judul);
+                                    $judul = substr($judul, 0, 20);
 
-                                if (strlen($item->judul) > 20) {
-                                    $judul .= '...';
-                                }
-                            @endphp
-                            <h6 class="card-title mb-1">
-                                {{ $judul }}
-                            </h6>
-                            {{-- like button --}}
-                            <div class="d-flex justify-content-between" id="like-{{ $item->id }}-yes">
-                                {{-- <div class="d-flex justify-content-between"> --}}
-                                @csrf
-                                {{-- time created --}}
-                                <small class="text-dark">
-                                    {{ $item->created_at->diffForHumans() }} | Penulis
-                                    {{ $item->penulis }}
-                                </small>
-                                {{-- </div> --}}
+                                    if (strlen($item->judul) > 20) {
+                                        $judul .= '...';
+                                    }
+                                @endphp
+                                <h6 class="card-title mb-1">
+                                    {{ $judul }}
+                                </h6>
+                                {{-- like button --}}
+                                <div class="d-flex justify-content-between" id="like-{{ $item->id }}-yes">
+                                    {{-- <div class="d-flex justify-content-between"> --}}
+                                    @csrf
+                                    {{-- time created --}}
+                                    <small class="text-dark">
+                                        {{ $item->created_at->diffForHumans() }} | Penulis
+                                        {{ $item->penulis }}
+                                    </small>
+                                    {{-- </div> --}}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
             @endforeach
 
             {{-- pagination --}}

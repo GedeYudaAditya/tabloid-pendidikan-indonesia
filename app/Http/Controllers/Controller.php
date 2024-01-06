@@ -499,11 +499,12 @@ class Controller extends BaseController
         $data = [
             'title' => 'Buku',
             'kabupaten' => Kabupaten::all(),
+            'berita' => Berita::first(),
             'buku' => Buku::where('slug', $slug)->firstOrFail(),
             'sponsors' => Sponsor::all(),
             'shareButtons' => $shareButtons
         ];
-        return view('buku-show', $data);
+        return view('buku-detail', $data);
     }
 
     public function event()

@@ -33,7 +33,7 @@
             {{-- Thumbnail berita --}}
             <div class="mb-3">
                 <label for="thumbnail" class="form-label">File Foto Artikel</label>
-                <input class="form-control" name="gambar" type="file" id="thumbnail" accept=".jpg,.png,.jpeg"
+                <input class="form-control" name="gambar[]" type="file" id="thumbnail" accept=".jpg,.png,.jpeg" multiple
                     onchange="previewImage()">
             </div>
 
