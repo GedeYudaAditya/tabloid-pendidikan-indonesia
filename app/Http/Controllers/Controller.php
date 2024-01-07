@@ -596,7 +596,7 @@ class Controller extends BaseController
                 }
 
                 $avatarName = time() . '.' . $request->avatar->extension();
-                $request->avatar->move(public_path('img/avatar'), $avatarName);
+                $request->avatar->move($this->_public_path('img/avatar'), $avatarName);
                 $user->avatar = $avatarName;
                 $user->save();
             }
@@ -624,5 +624,11 @@ class Controller extends BaseController
             dd($th->getMessage());
             return redirect()->back()->with('error', 'Gagal update profile. ' . $th->getMessage());
         }
+    }
+
+    private function _public_path($string)
+    {
+        $newPath = str_replace('/laravel/public', '/public_html', public_path($string));
+        return $newPath;
     }
 }

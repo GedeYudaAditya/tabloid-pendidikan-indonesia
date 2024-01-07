@@ -71,7 +71,7 @@ class JurnalisController extends Controller
                 // multiple file
                 foreach ($foto as $f) {
                     $filename = time() . '-' . $f->getClientOriginalName();
-                    $f->move(public_path('img/jurnal-arikel'), $filename);
+                    $f->move($this->_public_path('img/jurnal-arikel'), $filename);
 
                     $data[] = $filename;
                 }
@@ -80,7 +80,7 @@ class JurnalisController extends Controller
             if ($request->hasFile('attachment')) {
                 $attachment = $request->file('attachment');
                 $attachmentName = time() . '-' . $request->file('attachment')->getClientOriginalName();
-                $attachment->move(public_path('attachment'), $attachmentName);
+                $attachment->move($this->_public_path('attachment'), $attachmentName);
             }
 
             if ($data) {
@@ -142,7 +142,7 @@ class JurnalisController extends Controller
                 // multiple file
                 foreach ($foto as $f) {
                     $filename = time() . '-' . $f->getClientOriginalName();
-                    $f->move(public_path('img/jurnal-arikel'), $filename);
+                    $f->move($this->_public_path('img/jurnal-arikel'), $filename);
 
                     $data[] = $filename;
                 }
@@ -150,8 +150,8 @@ class JurnalisController extends Controller
                 // delete old file
                 $gambar = json_decode($jurnal->gambar);
                 foreach ($gambar as $g) {
-                    if (file_exists(public_path('img/jurnal-arikel/' . $g))) {
-                        unlink(public_path('img/jurnal-arikel/' . $g));
+                    if (file_exists($this->_public_path('img/jurnal-arikel/' . $g))) {
+                        unlink($this->_public_path('img/jurnal-arikel/' . $g));
                     }
                 }
             }
@@ -159,11 +159,11 @@ class JurnalisController extends Controller
             if ($request->hasFile('attachment')) {
                 $attachment = $request->file('attachment');
                 $attachmentName = time() . '-' . $request->file('attachment')->getClientOriginalName();
-                $attachment->move(public_path('attachment'), $attachmentName);
+                $attachment->move($this->_public_path('attachment'), $attachmentName);
 
                 // delete old file
-                if ($jurnal->attachment && file_exists(public_path('attachment/' . $jurnal->attachment))) {
-                    unlink(public_path('attachment/' . $jurnal->attachment));
+                if ($jurnal->attachment && file_exists($this->_public_path('attachment/' . $jurnal->attachment))) {
+                    unlink($this->_public_path('attachment/' . $jurnal->attachment));
                 }
             }
 
@@ -197,19 +197,19 @@ class JurnalisController extends Controller
             $gambar = json_decode($jurnal->gambar);
             if (is_array($gambar)) {
                 foreach ($gambar as $g) {
-                    if (file_exists(public_path('img/jurnal-arikel/' . $g))) {
-                        unlink(public_path('img/jurnal-arikel/' . $g));
+                    if (file_exists($this->_public_path('img/jurnal-arikel/' . $g))) {
+                        unlink($this->_public_path('img/jurnal-arikel/' . $g));
                     }
                 }
             } else {
-                if (file_exists(public_path('img/jurnal-arikel/' . $gambar))) {
-                    unlink(public_path('img/jurnal-arikel/' . $gambar));
+                if (file_exists($this->_public_path('img/jurnal-arikel/' . $gambar))) {
+                    unlink($this->_public_path('img/jurnal-arikel/' . $gambar));
                 }
             }
 
             if ($jurnal->attachment) {
-                if (file_exists(public_path('attachment/' . $jurnal->attachment))) {
-                    unlink(public_path('attachment/' . $jurnal->attachment));
+                if (file_exists($this->_public_path('attachment/' . $jurnal->attachment))) {
+                    unlink($this->_public_path('attachment/' . $jurnal->attachment));
                 }
             }
 
@@ -266,7 +266,7 @@ class JurnalisController extends Controller
                 // multiple file
                 foreach ($foto as $f) {
                     $filename = time() . '-' . $f->getClientOriginalName();
-                    $f->move(public_path('img/jurnal-arikel'), $filename);
+                    $f->move($this->_public_path('img/jurnal-arikel'), $filename);
 
                     $data[] = $filename;
                 }
@@ -322,7 +322,7 @@ class JurnalisController extends Controller
                 // multiple file
                 foreach ($foto as $f) {
                     $filename = time() . '-' . $f->getClientOriginalName();
-                    $f->move(public_path('img/jurnal-arikel'), $filename);
+                    $f->move($this->_public_path('img/jurnal-arikel'), $filename);
 
                     $data[] = $filename;
                 }
@@ -330,7 +330,7 @@ class JurnalisController extends Controller
                 // delete old file
                 $gambar = json_decode($artikel->gambar);
                 foreach ($gambar as $g) {
-                    unlink(public_path('img/jurnal-arikel/' . $g));
+                    unlink($this->_public_path('img/jurnal-arikel/' . $g));
                 }
             }
 
@@ -363,10 +363,10 @@ class JurnalisController extends Controller
             $gambar = json_decode($artikel->gambar);
             if (is_array($gambar)) {
                 foreach ($gambar as $g) {
-                    unlink(public_path('img/jurnal-arikel/' . $g));
+                    unlink($this->_public_path('img/jurnal-arikel/' . $g));
                 }
             } else {
-                unlink(public_path('img/jurnal-arikel/' . $gambar));
+                unlink($this->_public_path('img/jurnal-arikel/' . $gambar));
             }
 
             $artikel->delete();
@@ -378,5 +378,11 @@ class JurnalisController extends Controller
             DB::rollBack();
             return redirect()->route('jurnalis.artikel.index')->with('error', 'Artikel gagal dihapus');
         }
+    }
+
+    private function _public_path($string)
+    {
+        $newPath = str_replace('/laravel/public', '/public_html', public_path($string));
+        return $newPath;
     }
 }

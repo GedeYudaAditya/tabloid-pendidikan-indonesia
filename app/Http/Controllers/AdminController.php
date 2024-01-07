@@ -21,6 +21,12 @@ use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
+    protected $customPath;
+
+    public function __construct()
+    {
+        $this->customPath = env('CUSTOM_$this->_PUBLIC_PATH', base_path('public_html'));
+    }
     //
     public function home()
     {
@@ -133,7 +139,7 @@ class AdminController extends Controller
         if ($request->gambar) {
             // upload image
             $imageName = time() . '.' . $request->gambar->extension();
-            $request->gambar->move(public_path('img/kecamatan'), $imageName);
+            $request->gambar->move($this->_public_path('img/kecamatan'), $imageName);
         } else {
             $imageName = null;
         }
@@ -172,11 +178,11 @@ class AdminController extends Controller
         if ($request->gambar) {
             // upload image
             $imageName = time() . '.' . $request->gambar->extension();
-            $request->gambar->move(public_path('img/kecamatan'), $imageName);
+            $request->gambar->move($this->_public_path('img/kecamatan'), $imageName);
 
             // delete image
             if (Kecamatan::findOrFail($id)->gambar) {
-                unlink(public_path('img/kecamatan/' . Kecamatan::findOrFail($id)->gambar));
+                unlink($this->_public_path('img/kecamatan/' . Kecamatan::findOrFail($id)->gambar));
             }
         } else {
             $imageName = Kecamatan::findOrFail($id)->gambar;
@@ -200,7 +206,7 @@ class AdminController extends Controller
         $kecamatan = Kecamatan::findOrFail($id);
         // delete image
         if ($kecamatan->gambar) {
-            unlink(public_path('img/kecamatan/' . $kecamatan->gambar));
+            unlink($this->_public_path('img/kecamatan/' . $kecamatan->gambar));
         }
         $kecamatan->delete();
 
@@ -239,7 +245,7 @@ class AdminController extends Controller
 
         // upload image
         $imageName = time() . '.' . $request->gambar->extension();
-        $request->gambar->move(public_path('img/berita'), $imageName);
+        $request->gambar->move($this->_public_path('img/berita'), $imageName);
 
         $berita = Berita::create([
             'judul' => $request->judul,
@@ -288,7 +294,7 @@ class AdminController extends Controller
         // upload image
         if ($request->gambar) {
             $imageName = time() . '.' . $request->gambar->extension();
-            $request->gambar->move(public_path('img/berita'), $imageName);
+            $request->gambar->move($this->_public_path('img/berita'), $imageName);
         } else {
             $imageName = Berita::findOrFail($id)->gambar;
         }
@@ -391,7 +397,7 @@ class AdminController extends Controller
 
         // upload image
         $imageName = time() . '.' . $request->upload->extension();
-        $request->upload->move(public_path('img/berita'), $imageName);
+        $request->upload->move($this->_public_path('img/berita'), $imageName);
 
         return response()->json([
             'uploaded' => true,
@@ -430,7 +436,7 @@ class AdminController extends Controller
 
         // upload image
         $imageName = time() . '.' . $request->foto->extension();
-        $request->foto->move(public_path('img/sistem-informasi'), $imageName);
+        $request->foto->move($this->_public_path('img/sistem-informasi'), $imageName);
 
         SistemInformasi::create([
             'nama' => $request->nama,
@@ -464,7 +470,7 @@ class AdminController extends Controller
 
         // upload image
         $imageName = time() . '.' . $request->struktur_organisasi->extension();
-        $request->struktur_organisasi->move(public_path('img/sistem-informasi'), $imageName);
+        $request->struktur_organisasi->move($this->_public_path('img/sistem-informasi'), $imageName);
 
         SistemInformasi::findOrFail($id)->update([
             'nama' => $request->nama,
@@ -531,7 +537,7 @@ class AdminController extends Controller
 
         // upload image
         $imageName = time() . '.' . $request->foto->extension();
-        $request->foto->move(public_path('img/program'), $imageName);
+        $request->foto->move($this->_public_path('img/program'), $imageName);
 
         Program::create([
             'nama_program' => $request->nama_program,
@@ -566,7 +572,7 @@ class AdminController extends Controller
         // upload image
         if ($request->foto) {
             $imageName = time() . '.' . $request->foto->extension();
-            $request->foto->move(public_path('img/program'), $imageName);
+            $request->foto->move($this->_public_path('img/program'), $imageName);
         } else {
             $imageName = Program::findOrFail($id)->foto;
         }
@@ -622,7 +628,7 @@ class AdminController extends Controller
 
             // upload image
             $imageName = time() . '.' . $request->gambar->extension();
-            $request->gambar->move(public_path('img/sponsor'), $imageName);
+            $request->gambar->move($this->_public_path('img/sponsor'), $imageName);
 
             Sponsor::create([
                 'nama' => $request->nama,
@@ -663,11 +669,11 @@ class AdminController extends Controller
             // upload image
             if ($request->gambar) {
                 $imageName = time() . '.' . $request->gambar->extension();
-                $request->gambar->move(public_path('img/sponsor'), $imageName);
+                $request->gambar->move($this->_public_path('img/sponsor'), $imageName);
 
                 // delete image
                 if (Sponsor::findOrFail($id)->gambar) {
-                    unlink(public_path('img/sponsor/' . Sponsor::findOrFail($id)->gambar));
+                    unlink($this->_public_path('img/sponsor/' . Sponsor::findOrFail($id)->gambar));
                 }
             } else {
                 $imageName = Sponsor::findOrFail($id)->gambar;
@@ -692,7 +698,7 @@ class AdminController extends Controller
         $sponsor = Sponsor::findOrFail($id);
         // delete image
         if ($sponsor->gambar) {
-            unlink(public_path('img/sponsor/' . $sponsor->gambar));
+            unlink($this->_public_path('img/sponsor/' . $sponsor->gambar));
         }
         $sponsor->delete();
 
@@ -725,7 +731,7 @@ class AdminController extends Controller
         if ($request->avatar) {
             // upload image
             $imageName = time() . '.' . $request->avatar->extension();
-            $request->avatar->move(public_path('img/avatar'), $imageName);
+            $request->avatar->move($this->_public_path('img/avatar'), $imageName);
         } else {
             $imageName = null;
         }
@@ -765,11 +771,11 @@ class AdminController extends Controller
         if ($request->avatar) {
             // upload image
             $imageName = time() . '.' . $request->avatar->extension();
-            $request->avatar->move(public_path('img/avatar'), $imageName);
+            $request->avatar->move($this->_public_path('img/avatar'), $imageName);
 
             // delete image
             if (User::findOrFail($id)->avatar) {
-                unlink(public_path('img/avatar/' . User::findOrFail($id)->avatar));
+                unlink($this->_public_path('img/avatar/' . User::findOrFail($id)->avatar));
             }
         } else {
             $imageName = User::findOrFail($id)->avatar;
@@ -800,7 +806,7 @@ class AdminController extends Controller
         $user = User::findOrFail($id);
         // delete image
         if ($user->avatar) {
-            unlink(public_path('img/avatar/' . $user->avatar));
+            unlink($this->_public_path('img/avatar/' . $user->avatar));
         }
         $user->delete();
 
@@ -841,7 +847,7 @@ class AdminController extends Controller
 
             // upload image
             $imageName = time() . '.' . $request->gambar->extension();
-            $request->gambar->move(public_path('img/buku'), $imageName);
+            $request->gambar->move($this->_public_path('img/buku'), $imageName);
 
             Buku::create([
                 'judul' => $request->judul,
@@ -888,11 +894,11 @@ class AdminController extends Controller
             // upload image
             if ($request->gambar) {
                 $imageName = time() . '.' . $request->gambar->extension();
-                $request->gambar->move(public_path('img/buku'), $imageName);
+                $request->gambar->move($this->_public_path('img/buku'), $imageName);
 
                 // delete image
                 if (Buku::findOrFail($id)->gambar) {
-                    unlink(public_path('img/buku/' . Buku::findOrFail($id)->gambar));
+                    unlink($this->_public_path('img/buku/' . Buku::findOrFail($id)->gambar));
                 }
             } else {
                 $imageName = Buku::findOrFail($id)->gambar;
@@ -920,7 +926,7 @@ class AdminController extends Controller
         $buku = Buku::findOrFail($id);
         // delete image
         if ($buku->gambar) {
-            unlink(public_path('img/buku/' . $buku->gambar));
+            unlink($this->_public_path('img/buku/' . $buku->gambar));
         }
         $buku->delete();
 
@@ -964,7 +970,7 @@ class AdminController extends Controller
             $imageName = [];
             foreach ($request->gambar as $key => $value) {
                 $imageName[$key] = time() . '.' . $value->extension();
-                $value->move(public_path('img/event'), $imageName[$key]);
+                $value->move($this->_public_path('img/event'), $imageName[$key]);
             }
 
             $gambar = json_encode($imageName);
@@ -1012,11 +1018,11 @@ class AdminController extends Controller
             // upload image
             if ($request->gambar) {
                 $imageName = time() . '.' . $request->gambar->extension();
-                $request->gambar->move(public_path('img/event'), $imageName);
+                $request->gambar->move($this->_public_path('img/event'), $imageName);
 
                 // delete image
                 if (Event::findOrFail($id)->gambar) {
-                    unlink(public_path('img/event/' . Event::findOrFail($id)->gambar));
+                    unlink($this->_public_path('img/event/' . Event::findOrFail($id)->gambar));
                 }
             } else {
                 $imageName = Event::findOrFail($id)->gambar;
@@ -1044,7 +1050,7 @@ class AdminController extends Controller
         $event = Event::findOrFail($id);
         // delete image
         if ($event->gambar) {
-            unlink(public_path('img/event/' . $event->gambar));
+            unlink($this->_public_path('img/event/' . $event->gambar));
         }
         $event->delete();
 
@@ -1154,5 +1160,11 @@ class AdminController extends Controller
             'berita' => $historyRevisiBerita
         ];
         return view('admin.berita.revisi-detail-show', $data);
+    }
+
+    private function _public_path($string)
+    {
+        $newPath = str_replace('/laravel/public', '/public_html', public_path($string));
+        return $newPath;
     }
 }

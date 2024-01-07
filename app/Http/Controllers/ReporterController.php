@@ -74,14 +74,14 @@ class ReporterController extends Controller
                 if (count($foto) > 1) {
                     foreach ($foto as $f) {
                         $filename = time() . '-' . $f->getClientOriginalName();
-                        $f->move(public_path('img/liputan'), $filename);
+                        $f->move($this->_public_path('img/liputan'), $filename);
 
                         // data name file for save to database
                         $data[] = $filename;
                     }
                 } else {
                     $filename = time() . '-' . $foto[0]->getClientOriginalName();
-                    $foto[0]->move(public_path('img/liputan'), $filename);
+                    $foto[0]->move($this->_public_path('img/liputan'), $filename);
 
                     // data name file for save to database
                     $data = $filename;
@@ -147,8 +147,8 @@ class ReporterController extends Controller
                 foreach ($old_image as $old) {
                     // remove image
                     // check if image exists in folder
-                    if (file_exists(public_path('img/liputan/' . $old))) {
-                        unlink(public_path('img/liputan/' . $old));
+                    if (file_exists($this->_public_path('img/liputan/' . $old))) {
+                        unlink($this->_public_path('img/liputan/' . $old));
                     }
                 }
             }
@@ -160,14 +160,14 @@ class ReporterController extends Controller
                 if (count($foto) > 1) {
                     foreach ($foto as $f) {
                         $filename = time() . '-' . $f->getClientOriginalName();
-                        $f->move(public_path('img/liputan'), $filename);
+                        $f->move($this->_public_path('img/liputan'), $filename);
 
                         // data name file for save to database
                         $data[] = $filename;
                     }
                 } else {
                     $filename = time() . '-' . $foto[0]->getClientOriginalName();
-                    $foto[0]->move(public_path('img/liputan'), $filename);
+                    $foto[0]->move($this->_public_path('img/liputan'), $filename);
 
                     // data name file for save to database
                     $data = $filename;
@@ -209,14 +209,14 @@ class ReporterController extends Controller
                     foreach ($old_image as $old) {
                         // remove image
                         // check if image exists in folder
-                        if (file_exists(public_path('img/liputan/' . $old))) {
-                            unlink(public_path('img/liputan/' . $old));
+                        if (file_exists($this->_public_path('img/liputan/' . $old))) {
+                            unlink($this->_public_path('img/liputan/' . $old));
                         }
                     }
                 } else {
                     // check if image exists in folder
-                    if (file_exists(public_path('img/liputan/' . $old_image))) {
-                        unlink(public_path('img/liputan/' . $old_image));
+                    if (file_exists($this->_public_path('img/liputan/' . $old_image))) {
+                        unlink($this->_public_path('img/liputan/' . $old_image));
                     }
                 }
             }
@@ -228,5 +228,11 @@ class ReporterController extends Controller
             dd($th);
             return redirect()->back()->with('error', 'Liputan gagal dihapus');
         }
+    }
+
+    private function _public_path($string)
+    {
+        $newPath = str_replace('/laravel/public', '/public_html', public_path($string));
+        return $newPath;
     }
 }

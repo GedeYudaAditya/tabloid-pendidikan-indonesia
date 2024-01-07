@@ -78,7 +78,7 @@ class RedaksiController extends Controller
                 // multiple file
                 foreach ($foto as $f) {
                     $filename = time() . '-' . $f->getClientOriginalName();
-                    $f->move(public_path('img/berita'), $filename);
+                    $f->move($this->_public_path('img/berita'), $filename);
 
                     $data[] = $filename;
                 }
@@ -89,10 +89,10 @@ class RedaksiController extends Controller
                     // copy file from liputan to berita
                     if (is_array($data)) {
                         foreach ($data as $d) {
-                            copy(public_path('img/liputan/' . $d), public_path('img/berita/' . $d));
+                            copy($this->_public_path('img/liputan/' . $d), $this->_public_path('img/berita/' . $d));
                         }
                     } else {
-                        copy(public_path('img/liputan/' . $data), public_path('img/berita/' . $data));
+                        copy($this->_public_path('img/liputan/' . $data), $this->_public_path('img/berita/' . $data));
                     }
                 } else {
                     $data = null;
@@ -189,7 +189,7 @@ class RedaksiController extends Controller
                 // multiple file
                 foreach ($foto as $f) {
                     $filename = time() . '-' . $f->getClientOriginalName();
-                    $f->move(public_path('img/berita'), $filename);
+                    $f->move($this->_public_path('img/berita'), $filename);
 
                     $data[] = $filename;
                 }
@@ -286,7 +286,7 @@ class RedaksiController extends Controller
                 // multiple file
                 foreach ($foto as $f) {
                     $filename = time() . '-' . $f->getClientOriginalName();
-                    $f->move(public_path('img/berita'), $filename);
+                    $f->move($this->_public_path('img/berita'), $filename);
 
                     $data[] = $filename;
                 }
@@ -354,14 +354,14 @@ class RedaksiController extends Controller
                 if (is_array($gambar)) {
                     foreach ($gambar as $g) {
                         // check if image exists in folder
-                        if (file_exists(public_path('img/berita/' . $g))) {
-                            unlink(public_path('img/berita/' . $g));
+                        if (file_exists($this->_public_path('img/berita/' . $g))) {
+                            unlink($this->_public_path('img/berita/' . $g));
                         }
                     }
                 } else {
                     // check if image exists in folder
-                    if (file_exists(public_path('img/berita/' . $gambar))) {
-                        unlink(public_path('img/berita/' . $gambar));
+                    if (file_exists($this->_public_path('img/berita/' . $gambar))) {
+                        unlink($this->_public_path('img/berita/' . $gambar));
                     }
                 }
             }
@@ -415,12 +415,12 @@ class RedaksiController extends Controller
                 if (!is_array($foto)) {
                     // single file
                     $filename = time() . '-' . $foto->getClientOriginalName();
-                    $foto->move(public_path('img/hariraya'), $filename);
+                    $foto->move($this->_public_path('img/hariraya'), $filename);
                 } else {
                     // multiple file
                     foreach ($foto as $f) {
                         $filename = time() . '-' . $f->getClientOriginalName();
-                        $f->move(public_path('img/hariraya'), $filename);
+                        $f->move($this->_public_path('img/hariraya'), $filename);
                     }
                 }
             } else {
@@ -532,5 +532,11 @@ class RedaksiController extends Controller
             'berita' => $historyRevisiBerita
         ];
         return view('redaksi.unpublish.revisi-detail-show', $data);
+    }
+
+    private function _public_path($string)
+    {
+        $newPath = str_replace('/laravel/public', '/public_html', public_path($string));
+        return $newPath;
     }
 }
